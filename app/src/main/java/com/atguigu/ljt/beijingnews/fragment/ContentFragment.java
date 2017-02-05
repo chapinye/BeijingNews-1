@@ -13,7 +13,7 @@ import butterknife.InjectView;
 /**
  * Created by 李金桐 on 2017/2/5.
  * QQ: 474297694
- * 功能: xxxx
+ * 功能: ContentFragment 主页面的Fragment
  */
 
 public class ContentFragment extends BaseFragment {
