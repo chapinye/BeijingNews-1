@@ -1,10 +1,14 @@
 package com.atguigu.ljt.beijingnews.fragment;
 
-import android.view.Gravity;
+import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.RadioGroup;
 
+import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.base.BaseFragment;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by 李金桐 on 2017/2/5.
@@ -14,19 +18,29 @@ import com.atguigu.ljt.beijingnews.base.BaseFragment;
 
 public class ContentFragment extends BaseFragment {
 
-    private TextView textView;
+
+    @InjectView(R.id.viewpager)
+    ViewPager viewpager;
+    @InjectView(R.id.rg_main)
+    RadioGroup rgMain;
 
     @Override
     protected View initView() {
-        textView = new TextView(mContext);
-        return textView;
+        View view = View.inflate(mContext, R.layout.fragment_content, null);
+        ButterKnife.inject(this, view);
+        return view;
     }
 
     @Override
     protected void initData() {
         super.initData();
-        textView.setText("主页面");
-        textView.setGravity(Gravity.CENTER);
-        textView.setTextSize(30);
+        rgMain.check(R.id.rb_news);
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 }
