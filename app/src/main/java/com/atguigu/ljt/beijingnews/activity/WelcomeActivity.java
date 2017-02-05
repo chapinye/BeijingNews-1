@@ -11,6 +11,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.RelativeLayout;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.util.CacheUtils;
 
 /**
  * 应用启动的旋转动画 当动画结束的时候跳转到引导页面或者主页面
@@ -32,11 +33,11 @@ public class WelcomeActivity extends AppCompatActivity {
         ra.setDuration(2000);
         ra.setFillAfter(true);
 
-        AlphaAnimation aa = new AlphaAnimation(0,1);
+        AlphaAnimation aa = new AlphaAnimation(0, 1);
         aa.setDuration(2000);
         aa.setFillAfter(true);
 
-        ScaleAnimation sa = new ScaleAnimation(0,1,0,1,Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+        ScaleAnimation sa = new ScaleAnimation(0, 1, 0, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         sa.setDuration(2000);
         sa.setFillAfter(true);
         AnimationSet set = new AnimationSet(false);
@@ -52,7 +53,12 @@ public class WelcomeActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                startActivity(new Intent(WelcomeActivity.this,GuideActivity.class));
+                boolean b = CacheUtils.getBoolean(WelcomeActivity.this, "start_main");
+                if (b) {
+                    startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                } else {
+                    startActivity(new Intent(WelcomeActivity.this, GuideActivity.class));
+                }
                 finish();
             }
 

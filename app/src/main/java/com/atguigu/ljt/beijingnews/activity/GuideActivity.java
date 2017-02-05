@@ -1,5 +1,6 @@
 package com.atguigu.ljt.beijingnews.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.util.CacheUtils;
 import com.atguigu.ljt.beijingnews.util.DensityUtil;
 
 import butterknife.ButterKnife;
@@ -48,7 +50,7 @@ public class GuideActivity extends AppCompatActivity {
             @Override
             public void onGlobalLayout() {
                 ivRedPoint.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                leftMagin = llPoint.getChildAt(1).getLeft()-llPoint.getChildAt(0).getLeft();
+                leftMagin = llPoint.getChildAt(1).getLeft() - llPoint.getChildAt(0).getLeft();
             }
         });
         viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -116,5 +118,8 @@ public class GuideActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_start_main)
     public void onClick() {
+        CacheUtils.putBoolean(this, "start_main", true);
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 }
