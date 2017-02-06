@@ -9,9 +9,13 @@ import android.view.ViewGroup;
 import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
+import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by 李金桐 on 2017/2/6.
@@ -22,9 +26,12 @@ import java.util.List;
 public class NewsMenuDetailPager extends MenuDetailBasePager {
 
     private  List<NewsCenterBean.DataBean.ChildrenBean> dataBeans;
-    private ViewPager viewpager;
     private ArrayList<TabDetailPager> tabDetailPagers;
 
+    @InjectView(R.id.viewpager)
+    ViewPager viewpager;
+    @InjectView(R.id.indicator)
+    TabPageIndicator indicator;
     public NewsMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
         this.dataBeans = dataBean.getChildren();
@@ -33,7 +40,7 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.news_menu_detail_pager, null);
-        viewpager = (ViewPager) view.findViewById(R.id.viewpager);
+        ButterKnife.inject(this, view);
         return view;
     }
 
@@ -45,8 +52,15 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
             tabDetailPagers.add(new TabDetailPager(mContext,dataBeans.get(i)));
         }
         viewpager.setAdapter(new MyAdapter());
+        indicator.setViewPager(viewpager);
     }
     class  MyAdapter extends PagerAdapter{
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return dataBeans.get(position).getTitle();
+        }
+
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
