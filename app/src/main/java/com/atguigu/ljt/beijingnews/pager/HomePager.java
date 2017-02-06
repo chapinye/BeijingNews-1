@@ -2,6 +2,7 @@ package com.atguigu.ljt.beijingnews.pager;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 

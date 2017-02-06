@@ -18,9 +18,9 @@ public class BasePager {
 
     protected Context mContext;
     public View rootView;
-    protected ImageButton ib_menu;
-    protected TextView tv_title;
-    protected  FrameLayout fl_main;
+    public ImageButton ib_menu;
+    public TextView tv_title;
+    public  FrameLayout fl_main;
     public BasePager(Context context) {
         this.mContext = context;
         rootView = initView();

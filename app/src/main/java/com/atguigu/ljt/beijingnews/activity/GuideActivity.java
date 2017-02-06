@@ -42,10 +42,10 @@ public class GuideActivity extends AppCompatActivity {
         setListener();
         initData();
 
-
     }
 
     private void setListener() {
+//        leftMagin = DensityUtil.dip2px(this, 20);
         ivRedPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

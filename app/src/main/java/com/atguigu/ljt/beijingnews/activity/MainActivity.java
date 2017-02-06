@@ -1,5 +1,6 @@
 package com.atguigu.ljt.beijingnews.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import com.atguigu.ljt.beijingnews.R;
@@ -8,6 +9,8 @@ import com.atguigu.ljt.beijingnews.fragment.LeftMenuFragment;
 import com.atguigu.ljt.beijingnews.util.DensityUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
+
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 
 public class MainActivity extends SlidingFragmentActivity {
 
@@ -21,7 +24,9 @@ public class MainActivity extends SlidingFragmentActivity {
         setContentView(R.layout.activity_main);
         setBehindContentView(R.layout.leftmenu);
         SlidingMenu slidingMenu = getSlidingMenu();
-
+        if(Build.VERSION.SDK_INT >= 21){
+            getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
         slidingMenu.setMode(SlidingMenu.LEFT);
 
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);

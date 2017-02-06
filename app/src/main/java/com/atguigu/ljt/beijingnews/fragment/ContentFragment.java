@@ -1,17 +1,20 @@
 package com.atguigu.ljt.beijingnews.fragment;
 
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.activity.MainActivity;
 import com.atguigu.ljt.beijingnews.base.BaseFragment;
 import com.atguigu.ljt.beijingnews.base.BasePager;
 import com.atguigu.ljt.beijingnews.pager.HomePager;
 import com.atguigu.ljt.beijingnews.pager.NewsPager;
 import com.atguigu.ljt.beijingnews.pager.SettingPager;
 import com.atguigu.ljt.beijingnews.view.MyViewPager;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
 
@@ -55,19 +58,60 @@ public class ContentFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
-                    case  R.id.rb_home:
-                        viewpager.setCurrentItem(0,false);
+                    case R.id.rb_home:
+                        viewpager.setCurrentItem(0, false);
+                        isShowSlidingMenu(false);
                         break;
-                    case  R.id.rb_news:
-                        viewpager.setCurrentItem(1,false);
+                    case R.id.rb_news:
+                        viewpager.setCurrentItem(1, false);
+                        isShowSlidingMenu(true);
                         break;
-                    case  R.id.rb_setting:
-                        viewpager.setCurrentItem(2,false);
+                    case R.id.rb_setting:
+                        viewpager.setCurrentItem(2, false);
+                        isShowSlidingMenu(false);
                         break;
                 }
             }
         });
+
+
+        viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                pagers.get(position).initData();
+                if(position==1) {
+                    pagers.get(position).ib_menu.setVisibility(View.VISIBLE);
+                }else{
+                    pagers.get(position).ib_menu.setVisibility(View.GONE);
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         rgMain.check(R.id.rb_news);
+    }
+
+    /**
+     *
+     * @param isShowSlidingMenu 判断是否显示侧滑菜单
+     */
+    private void isShowSlidingMenu(boolean isShowSlidingMenu) {
+        MainActivity mainActivity = (MainActivity) mContext;
+        if(isShowSlidingMenu) {
+            mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        }else{
+            mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        }
+
     }
 
     private void setAdatper() {
@@ -84,10 +128,9 @@ public class ContentFragment extends BaseFragment {
     class MyAdapter extends PagerAdapter {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            BasePager pager = pagers.get(position);
-            container.addView(pager.rootView);
-            pager.initData();
-            return pager.rootView;
+            View pager = pagers.get(position).rootView;
+            container.addView(pager);
+            return pager;
         }
 
         @Override
