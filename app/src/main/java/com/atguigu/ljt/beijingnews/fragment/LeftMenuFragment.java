@@ -10,8 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.activity.MainActivity;
 import com.atguigu.ljt.beijingnews.base.BaseFragment;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
+import com.atguigu.ljt.beijingnews.pager.NewsPager;
 import com.atguigu.ljt.beijingnews.util.DensityUtil;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class LeftMenuFragment extends BaseFragment {
 
     private List<NewsCenterBean.DataBean> datas;
     private ListView mListView;
-    private MyAdapter adapter;
+    private MyAdapter myAdapter;
     private int mPosition;
 
     @Override
@@ -39,11 +41,25 @@ public class LeftMenuFragment extends BaseFragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //记录点击的下标 刷新适配器 根据让被点击的item的Enabled为true使齐变色
                 mPosition = position;
-                adapter.notifyDataSetChanged();
+                myAdapter.notifyDataSetChanged();
+                MainActivity mainActivity = (MainActivity) mContext;
+                mainActivity.getSlidingMenu().toggle();
+                switchPager(mPosition);
+
             }
         });
         return mListView;
+    }
+
+    private void switchPager(int mPosition) {
+
+        MainActivity mainActivity = (MainActivity) mContext;
+        ContentFragment contentFragment = mainActivity.getContentFragment();
+        NewsPager newsPager = contentFragment.getNewsPager();
+        newsPager.switchPager(mPosition);
+
     }
 
     @Override
@@ -57,10 +73,12 @@ public class LeftMenuFragment extends BaseFragment {
             Log.e("TAG", "LeftMenuFragment setData()" + datas.get(i).getTitle());
         }
         //得到数据后设置适配器绑定数据
-        adapter =  new MyAdapter();
-        mListView.setAdapter(adapter);
+        myAdapter = new MyAdapter();
+        mListView.setAdapter(myAdapter);
+        switchPager(mPosition);
     }
-    class MyAdapter extends BaseAdapter{
+
+    class MyAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -77,11 +95,23 @@ public class LeftMenuFragment extends BaseFragment {
             return 0;
         }
 
+        /**
+         * 添加对应的item选项  设置数据和选中状态
+         *
+         * @param position
+         * @param convertView
+         * @param parent
+         * @return
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView textView = (TextView) View.inflate(mContext, R.layout.item_leftmenu,null);
 
-            textView.setEnabled(mPosition==position);
+            TextView textView = (TextView) View.inflate(mContext, R.layout.item_leftmenu, null);
+
+            textView.setText(datas.get(position).getTitle());
+
+            textView.setEnabled(mPosition == position);
+
             return textView;
         }
     }

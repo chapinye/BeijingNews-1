@@ -118,6 +118,10 @@ public class ContentFragment extends BaseFragment {
         pagers.add(new SettingPager(mContext));
     }
 
+    public NewsPager getNewsPager() {
+        return (NewsPager) pagers.get(1);
+    }
+
     class MyAdapter extends PagerAdapter {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {

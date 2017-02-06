@@ -9,7 +9,12 @@ import android.widget.TextView;
 
 import com.atguigu.ljt.beijingnews.activity.MainActivity;
 import com.atguigu.ljt.beijingnews.base.BasePager;
+import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
+import com.atguigu.ljt.beijingnews.detailpager.InteractMenuDetailPager;
+import com.atguigu.ljt.beijingnews.detailpager.NewsMenuDetailPager;
+import com.atguigu.ljt.beijingnews.detailpager.PhotosMenuDetailPager;
+import com.atguigu.ljt.beijingnews.detailpager.TopicMenuDetailPager;
 import com.atguigu.ljt.beijingnews.fragment.LeftMenuFragment;
 import com.atguigu.ljt.beijingnews.util.Constants;
 import com.google.gson.Gson;
@@ -17,6 +22,8 @@ import com.google.gson.Gson;
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
+
+import java.util.ArrayList;
 
 
 /**
@@ -26,6 +33,9 @@ import org.xutils.x;
  */
 
 public class NewsPager extends BasePager {
+
+    private ArrayList<MenuDetailBasePager> menuDetailBasePagers;
+    private NewsCenterBean newsCenterBean;
 
     public NewsPager(Context context) {
         super(context);
@@ -75,7 +85,7 @@ public class NewsPager extends BasePager {
     }
 
     private void processData(String json) {
-        NewsCenterBean newsCenterBean  = new Gson().fromJson(json,NewsCenterBean.class);
+        newsCenterBean = new Gson().fromJson(json, NewsCenterBean.class);
 //        Log.e("TAG", "NewsPager processData()"+newsCenterBean.getData().get(0).getTitle());
         /**
          * 功过MainActivity的把数据传递给左侧的侧滑菜单
@@ -84,7 +94,19 @@ public class NewsPager extends BasePager {
 
         LeftMenuFragment leftMenuFragment = mainActivity.getLeftMenuFragment();
 
+        menuDetailBasePagers = new ArrayList<>();
+        menuDetailBasePagers.add(new NewsMenuDetailPager(mainActivity));//新闻详情页面
+        menuDetailBasePagers.add(new TopicMenuDetailPager(mainActivity));//专题详情页面
+        menuDetailBasePagers.add(new PhotosMenuDetailPager(mainActivity));//组图详情页面
+        menuDetailBasePagers.add(new InteractMenuDetailPager(mainActivity));//互动详情页面
         leftMenuFragment.setData(newsCenterBean.getData());
     }
 
+    public void switchPager(int mPosition) {
+
+        tv_title.setText(newsCenterBean.getData().get(mPosition).getTitle());
+        menuDetailBasePagers.get(mPosition).initData();
+        fl_main.removeAllViews();
+        fl_main.addView(menuDetailBasePagers.get(mPosition).rootView);
+    }
 }
