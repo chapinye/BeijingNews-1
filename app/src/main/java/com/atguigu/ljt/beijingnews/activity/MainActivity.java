@@ -24,18 +24,21 @@ public class MainActivity extends SlidingFragmentActivity {
         setContentView(R.layout.activity_main);
         setBehindContentView(R.layout.leftmenu);
         SlidingMenu slidingMenu = getSlidingMenu();
-        if(Build.VERSION.SDK_INT >= 21){
+        if (Build.VERSION.SDK_INT >= 21) {
             getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
         slidingMenu.setMode(SlidingMenu.LEFT);
 
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 
-        slidingMenu.setBehindOffset(DensityUtil.dip2px(this, 220));
+        slidingMenu.setBehindOffset(DensityUtil.dip2px(this, 200));
         setFragment();
     }
 
     private void setFragment() {
+        /**
+         * 添加主页面和侧滑菜单的Fragment  并保存对应的TAG用于获取Fragment实例
+         */
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fl_leftmenu, new LeftMenuFragment(), LEFTMENU_TAG)
                 .replace(R.id.fl_main, new ContentFragment(), CONTENT_TAG)
