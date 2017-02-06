@@ -19,13 +19,16 @@ import com.atguigu.ljt.beijingnews.detailpager.TopicMenuDetailPager;
 import com.atguigu.ljt.beijingnews.fragment.LeftMenuFragment;
 import com.atguigu.ljt.beijingnews.util.CacheUtils;
 import com.atguigu.ljt.beijingnews.util.Constants;
-import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -37,7 +40,7 @@ import java.util.ArrayList;
 public class NewsPager extends BasePager {
 
     private ArrayList<MenuDetailBasePager> menuDetailBasePagers;
-    private NewsCenterBean newsCenterBean;
+    private List<NewsCenterBean.DataBean> dataBeanList;
 
     public NewsPager(Context context) {
         super(context);
@@ -56,8 +59,8 @@ public class NewsPager extends BasePager {
         textView.setGravity(Gravity.CENTER);
         fl_main.addView(textView);
 
-        String cacheJson  = CacheUtils.getString(mContext,Constants.NEWSCENTER_PAGER_URL);
-        if(!TextUtils.isEmpty(cacheJson)) {
+        String cacheJson = CacheUtils.getString(mContext, Constants.NEWSCENTER_PAGER_URL);
+        if (!TextUtils.isEmpty(cacheJson)) {
             processData(cacheJson);
         }
         getDataFromNet();
@@ -70,7 +73,7 @@ public class NewsPager extends BasePager {
             @Override
             public void onSuccess(String result) {
                 Log.e("TAG", "NewsPager onSuccess()请求成功==");
-                CacheUtils.putString(mContext,Constants.NEWSCENTER_PAGER_URL,result);
+                CacheUtils.putString(mContext, Constants.NEWSCENTER_PAGER_URL, result);
                 processData(result);
             }
 
@@ -92,7 +95,10 @@ public class NewsPager extends BasePager {
     }
 
     private void processData(String json) {
-        newsCenterBean = new Gson().fromJson(json, NewsCenterBean.class);
+//       NewsCenterBean newsCenterBean = new Gson().fromJson(json, NewsCenterBean.class);
+//        dataBeanList = newsCenterBean.getData();
+        NewsCenterBean newsCenterBean = paraseJson(json);
+        dataBeanList = newsCenterBean.getData();
 //        Log.e("TAG", "NewsPager processData()"+newsCenterBean.getData().get(0).getTitle());
         /**
          * 功过MainActivity的把数据传递给左侧的侧滑菜单
@@ -106,12 +112,76 @@ public class NewsPager extends BasePager {
         menuDetailBasePagers.add(new TopicMenuDetailPager(mainActivity));//专题详情页面
         menuDetailBasePagers.add(new PhotosMenuDetailPager(mainActivity));//组图详情页面
         menuDetailBasePagers.add(new InteractMenuDetailPager(mainActivity));//互动详情页面
-        leftMenuFragment.setData(newsCenterBean.getData());
+        leftMenuFragment.setData(dataBeanList);
     }
+
+    private NewsCenterBean paraseJson(String json) {
+        NewsCenterBean newsCenterBean = new NewsCenterBean();
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            int retcode = jsonObject.optInt("retcode");
+            newsCenterBean.setRetcode(retcode);
+            JSONArray data = jsonObject.optJSONArray("data");
+
+            List<NewsCenterBean.DataBean> datas = new ArrayList<>();
+            newsCenterBean.setData(datas);
+
+            for (int i = 0; i < data.length(); i++) {
+                JSONObject itemObject = (JSONObject) data.get(i);
+                if (itemObject != null) {
+                    NewsCenterBean.DataBean dataBean = new NewsCenterBean.DataBean();
+                    datas.add(dataBean);
+
+                    int id = itemObject.optInt("id");
+                    dataBean.setId(id);
+                    String title = itemObject.optString("title");
+                    dataBean.setTitle(title);
+                    int type = itemObject.optInt("type");
+                    dataBean.setType(type);
+                    String url = itemObject.optString("url");
+                    dataBean.setUrl(url);
+                    String url1 = itemObject.optString("url1");
+                    dataBean.setUrl1(url1);
+                    String excurl = itemObject.optString("excurl");
+                    dataBean.setExcurl(excurl);
+                    String dayurl = itemObject.optString("dayurl");
+                    dataBean.setDayurl(dayurl);
+                    String weekurl = itemObject.optString("weekurl");
+                    dataBean.setWeekurl(weekurl);
+
+                    JSONArray children = itemObject.optJSONArray("children");
+                    if (children != null && children.length() > 0) {
+                        List<NewsCenterBean.DataBean.ChildrenBean> childrenBeans = new ArrayList<>();
+                        dataBean.setChildren(childrenBeans);
+                        for (int j = 0; j < children.length(); j++) {
+                            NewsCenterBean.DataBean.ChildrenBean childrenBean = new NewsCenterBean.DataBean.ChildrenBean();
+                            childrenBeans.add(childrenBean);
+                            JSONObject childenObje = (JSONObject) children.get(j);
+                            int idc = childenObje.optInt("id");
+                            childrenBean.setId(idc);
+                            String titlec = childenObje.optString("title");
+                            childrenBean.setTitle(titlec);
+                            int typec = childenObje.optInt("type");
+                            childrenBean.setType(typec);
+                            String urlc = childenObje.optString("url");
+                            childrenBean.setUrl(urlc);
+                        }
+
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return newsCenterBean;
+    }
+
 
     public void switchPager(int mPosition) {
 
-        tv_title.setText(newsCenterBean.getData().get(mPosition).getTitle());
+        tv_title.setText(dataBeanList.get(mPosition).getTitle());
         menuDetailBasePagers.get(mPosition).initData();
 
         fl_main.removeAllViews();
