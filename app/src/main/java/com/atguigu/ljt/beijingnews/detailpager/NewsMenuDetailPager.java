@@ -5,6 +5,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by 李金桐 on 2017/2/6.
@@ -25,13 +27,16 @@ import butterknife.InjectView;
 
 public class NewsMenuDetailPager extends MenuDetailBasePager {
 
-    private  List<NewsCenterBean.DataBean.ChildrenBean> dataBeans;
+    @InjectView(R.id.ib_tab_next)
+    ImageButton ibTabNext;
+    private List<NewsCenterBean.DataBean.ChildrenBean> dataBeans;
     private ArrayList<TabDetailPager> tabDetailPagers;
 
     @InjectView(R.id.viewpager)
     ViewPager viewpager;
     @InjectView(R.id.indicator)
     TabPageIndicator indicator;
+
     public NewsMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
         this.dataBeans = dataBean.getChildren();
@@ -48,13 +53,19 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
     public void initData() {
         super.initData();
         tabDetailPagers = new ArrayList<>();
-        for(int i = 0; i <dataBeans.size() ; i++) {
-            tabDetailPagers.add(new TabDetailPager(mContext,dataBeans.get(i)));
+        for (int i = 0; i < dataBeans.size(); i++) {
+            tabDetailPagers.add(new TabDetailPager(mContext, dataBeans.get(i)));
         }
         viewpager.setAdapter(new MyAdapter());
         indicator.setViewPager(viewpager);
     }
-    class  MyAdapter extends PagerAdapter{
+
+    @OnClick(R.id.ib_tab_next)
+    public void onClick() {
+        viewpager.setCurrentItem(viewpager.getCurrentItem()+1);
+    }
+
+    class MyAdapter extends PagerAdapter {
 
         @Override
         public CharSequence getPageTitle(int position) {

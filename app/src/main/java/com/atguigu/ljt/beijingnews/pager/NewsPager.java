@@ -1,12 +1,9 @@
 package com.atguigu.ljt.beijingnews.pager;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
 
 import com.atguigu.ljt.beijingnews.activity.MainActivity;
 import com.atguigu.ljt.beijingnews.base.BasePager;
@@ -52,12 +49,6 @@ public class NewsPager extends BasePager {
         tv_title.setText("新闻");
         tv_title.setTextSize(25);
         ib_menu.setVisibility(View.VISIBLE);
-        TextView textView = new TextView(mContext);
-        textView.setText("新闻页面");
-        textView.setTextSize(25);
-        textView.setTextColor(Color.RED);
-        textView.setGravity(Gravity.CENTER);
-        fl_main.addView(textView);
 
         String cacheJson = CacheUtils.getString(mContext, Constants.NEWSCENTER_PAGER_URL);
         if (!TextUtils.isEmpty(cacheJson)) {
@@ -108,7 +99,7 @@ public class NewsPager extends BasePager {
         LeftMenuFragment leftMenuFragment = mainActivity.getLeftMenuFragment();
 
         menuDetailBasePagers = new ArrayList<>();
-        menuDetailBasePagers.add(new NewsMenuDetailPager(mainActivity,dataBeanList.get(0)));//新闻详情页面
+        menuDetailBasePagers.add(new NewsMenuDetailPager(mainActivity, dataBeanList.get(0)));//新闻详情页面
         menuDetailBasePagers.add(new TopicMenuDetailPager(mainActivity));//专题详情页面
         menuDetailBasePagers.add(new PhotosMenuDetailPager(mainActivity));//组图详情页面
         menuDetailBasePagers.add(new InteractMenuDetailPager(mainActivity));//互动详情页面
