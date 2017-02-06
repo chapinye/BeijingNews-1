@@ -1,12 +1,17 @@
 package com.atguigu.ljt.beijingnews.detailpager;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.view.Gravity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
+import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
+import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 李金桐 on 2017/2/6.
@@ -15,25 +20,53 @@ import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
  */
 
 public class NewsMenuDetailPager extends MenuDetailBasePager {
-    private TextView textView;
 
-    public NewsMenuDetailPager(Context context) {
+    private  List<NewsCenterBean.DataBean.ChildrenBean> dataBeans;
+    private ViewPager viewpager;
+    private ArrayList<TabDetailPager> tabDetailPagers;
+
+    public NewsMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
+        this.dataBeans = dataBean.getChildren();
     }
 
     @Override
     public View initView() {
-        //互动详情页面的视图
-        textView = new TextView(mContext);
-        textView.setTextSize(20);
-        textView.setGravity(Gravity.CENTER);
-        textView.setTextColor(Color.RED);
-        return textView;
+        View view = View.inflate(mContext, R.layout.news_menu_detail_pager, null);
+        viewpager = (ViewPager) view.findViewById(R.id.viewpager);
+        return view;
     }
 
     @Override
     public void initData() {
         super.initData();
-        textView.setText("新闻详情页面内容");
+        tabDetailPagers = new ArrayList<>();
+        for(int i = 0; i <dataBeans.size() ; i++) {
+            tabDetailPagers.add(new TabDetailPager(mContext,dataBeans.get(i)));
+        }
+        viewpager.setAdapter(new MyAdapter());
+    }
+    class  MyAdapter extends PagerAdapter{
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            tabDetailPagers.get(position).initData();
+            container.addView(tabDetailPagers.get(position).rootView);
+            return tabDetailPagers.get(position).rootView;
+        }
+
+        @Override
+        public int getCount() {
+            return tabDetailPagers.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
     }
 }
