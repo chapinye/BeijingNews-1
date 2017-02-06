@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.activity.MainActivity;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
@@ -46,6 +48,26 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
     public View initView() {
         View view = View.inflate(mContext, R.layout.news_menu_detail_pager, null);
         ButterKnife.inject(this, view);
+        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    isShowSlidingMenu(true);
+                }else{
+                    isShowSlidingMenu(false);
+                }
+    }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         return view;
     }
 
@@ -62,9 +84,21 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
 
     @OnClick(R.id.ib_tab_next)
     public void onClick() {
-        viewpager.setCurrentItem(viewpager.getCurrentItem()+1);
+        viewpager.setCurrentItem(viewpager.getCurrentItem() + 1);
     }
 
+    /**
+     *
+     * @param isShowSlidingMenu 判断是否显示侧滑菜单
+     */
+    private void isShowSlidingMenu(boolean isShowSlidingMenu) {
+        MainActivity mainActivity = (MainActivity) mContext;
+        if(isShowSlidingMenu) {
+            mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        }else{
+            mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        }
+    }
     class MyAdapter extends PagerAdapter {
 
         @Override

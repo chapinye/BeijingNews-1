@@ -104,7 +104,6 @@ public class ContentFragment extends BaseFragment {
         }else{
             mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
         }
-
     }
 
     private void setAdatper() {
