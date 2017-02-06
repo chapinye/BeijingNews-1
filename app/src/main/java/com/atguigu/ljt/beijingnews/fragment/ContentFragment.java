@@ -57,10 +57,10 @@ public class ContentFragment extends BaseFragment {
         rgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                isShowSlidingMenu(false);
                 switch (checkedId) {
                     case R.id.rb_home:
                         viewpager.setCurrentItem(0, false);
-                        isShowSlidingMenu(false);
                         break;
                     case R.id.rb_news:
                         viewpager.setCurrentItem(1, false);
@@ -68,7 +68,6 @@ public class ContentFragment extends BaseFragment {
                         break;
                     case R.id.rb_setting:
                         viewpager.setCurrentItem(2, false);
-                        isShowSlidingMenu(false);
                         break;
                 }
             }
@@ -84,12 +83,6 @@ public class ContentFragment extends BaseFragment {
             @Override
             public void onPageSelected(int position) {
                 pagers.get(position).initData();
-                if(position==1) {
-                    pagers.get(position).ib_menu.setVisibility(View.VISIBLE);
-                }else{
-                    pagers.get(position).ib_menu.setVisibility(View.GONE);
-
-                }
             }
 
             @Override

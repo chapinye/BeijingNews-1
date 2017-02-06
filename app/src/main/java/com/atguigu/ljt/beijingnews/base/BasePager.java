@@ -7,6 +7,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.activity.MainActivity;
 
 /**
  * Created by 李金桐 on 2017/2/5.
@@ -31,6 +32,12 @@ public class BasePager {
         ib_menu = (ImageButton) view.findViewById(R.id.ib_menu);
         tv_title = (TextView) view.findViewById(R.id.tv_title);
         fl_main = (FrameLayout) view.findViewById(R.id.fl_main);
+        ib_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)mContext).getSlidingMenu().toggle();
+            }
+        });
         return view;
     }
     public  void initData(){
