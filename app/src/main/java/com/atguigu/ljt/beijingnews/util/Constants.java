@@ -12,4 +12,4 @@ public class Constants {
      * 新闻中心的网络地址
      */
     public static final String NEWSCENTER_PAGER_URL = BASE_URL + "/static/api/news/categories.json";
-}
+        }
