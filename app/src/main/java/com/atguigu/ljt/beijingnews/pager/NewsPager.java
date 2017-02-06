@@ -2,6 +2,7 @@ package com.atguigu.ljt.beijingnews.pager;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.atguigu.ljt.beijingnews.detailpager.NewsMenuDetailPager;
 import com.atguigu.ljt.beijingnews.detailpager.PhotosMenuDetailPager;
 import com.atguigu.ljt.beijingnews.detailpager.TopicMenuDetailPager;
 import com.atguigu.ljt.beijingnews.fragment.LeftMenuFragment;
+import com.atguigu.ljt.beijingnews.util.CacheUtils;
 import com.atguigu.ljt.beijingnews.util.Constants;
 import com.google.gson.Gson;
 
@@ -54,6 +56,10 @@ public class NewsPager extends BasePager {
         textView.setGravity(Gravity.CENTER);
         fl_main.addView(textView);
 
+        String cacheJson  = CacheUtils.getString(mContext,Constants.NEWSCENTER_PAGER_URL);
+        if(!TextUtils.isEmpty(cacheJson)) {
+            processData(cacheJson);
+        }
         getDataFromNet();
 
     }
@@ -64,6 +70,7 @@ public class NewsPager extends BasePager {
             @Override
             public void onSuccess(String result) {
                 Log.e("TAG", "NewsPager onSuccess()请求成功==");
+                CacheUtils.putString(mContext,Constants.NEWSCENTER_PAGER_URL,result);
                 processData(result);
             }
 
@@ -106,6 +113,7 @@ public class NewsPager extends BasePager {
 
         tv_title.setText(newsCenterBean.getData().get(mPosition).getTitle());
         menuDetailBasePagers.get(mPosition).initData();
+
         fl_main.removeAllViews();
         fl_main.addView(menuDetailBasePagers.get(mPosition).rootView);
     }

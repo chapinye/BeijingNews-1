@@ -16,5 +16,10 @@ public class CacheUtils {
     public static boolean getBoolean(Context context, String key) {
         return context.getSharedPreferences("atguigu", Context.MODE_PRIVATE).getBoolean(key, false);
     }
-
+    public static void putString(Context context, String key, String value) {
+        context.getSharedPreferences("atguigu", Context.MODE_PRIVATE).edit().putString(key, value).commit();
+    }
+    public static String getString(Context context, String key) {
+        return context.getSharedPreferences("atguigu", Context.MODE_PRIVATE).getString(key, "");
+    }
 }
