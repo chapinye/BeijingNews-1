@@ -75,7 +75,7 @@ public class NewsPager extends BasePager {
 
             @Override
             public void onCancelled(CancelledException cex) {
-                Log.e("TAG", "NewsPager onCancelled()=  " + cex.getMessage());
+                Log.e("TAG", "NewsPager onCancelled()=" + cex.getMessage());
             }
 
             @Override
@@ -171,10 +171,11 @@ public class NewsPager extends BasePager {
 
 
     public void switchPager(int mPosition) {
-
+        //设置标题
         tv_title.setText(dataBeanList.get(mPosition).getTitle());
+        //加载视图数据
         menuDetailBasePagers.get(mPosition).initData();
-
+        //移除or添加视图
         fl_main.removeAllViews();
         fl_main.addView(menuDetailBasePagers.get(mPosition).rootView);
     }

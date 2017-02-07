@@ -29,15 +29,18 @@ import butterknife.OnClick;
 
 public class NewsMenuDetailPager extends MenuDetailBasePager {
 
+
     @InjectView(R.id.ib_tab_next)
     ImageButton ibTabNext;
-    private List<NewsCenterBean.DataBean.ChildrenBean> dataBeans;
-    private ArrayList<TabDetailPager> tabDetailPagers;
 
     @InjectView(R.id.viewpager)
     ViewPager viewpager;
+
     @InjectView(R.id.indicator)
     TabPageIndicator indicator;
+
+    private List<NewsCenterBean.DataBean.ChildrenBean> dataBeans;
+    private ArrayList<TabDetailPager> tabDetailPagers;
 
     public NewsMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
@@ -58,10 +61,10 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
             public void onPageSelected(int position) {
                 if (position == 0) {
                     isShowSlidingMenu(true);
-                }else{
+                } else {
                     isShowSlidingMenu(false);
                 }
-    }
+            }
 
             @Override
             public void onPageScrollStateChanged(int state) {
@@ -88,17 +91,17 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
     }
 
     /**
-     *
      * @param isShowSlidingMenu 判断是否显示侧滑菜单
      */
     private void isShowSlidingMenu(boolean isShowSlidingMenu) {
         MainActivity mainActivity = (MainActivity) mContext;
-        if(isShowSlidingMenu) {
+        if (isShowSlidingMenu) {
             mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-        }else{
+        } else {
             mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
         }
     }
+
     class MyAdapter extends PagerAdapter {
 
         @Override

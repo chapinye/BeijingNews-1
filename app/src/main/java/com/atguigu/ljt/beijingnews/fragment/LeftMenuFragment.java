@@ -1,7 +1,6 @@
 package com.atguigu.ljt.beijingnews.fragment;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -69,12 +68,13 @@ public class LeftMenuFragment extends BaseFragment {
 
     public void setData(List<NewsCenterBean.DataBean> data) {
         this.datas = data;
-        for (int i = 0; i < datas.size(); i++) {
-            Log.e("TAG", "LeftMenuFragment setData()" + datas.get(i).getTitle());
-        }
+//        for (int i = 0; i < datas.size(); i++) {
+//            Log.e("TAG", "LeftMenuFragment setData()" + datas.get(i).getTitle());
+//        }
         //得到数据后设置适配器绑定数据
         myAdapter = new MyAdapter();
         mListView.setAdapter(myAdapter);
+
         switchPager(mPosition);
     }
 
