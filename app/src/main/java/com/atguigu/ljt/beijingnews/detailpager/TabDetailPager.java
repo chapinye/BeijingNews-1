@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.activity.NewsDetailActivity;
@@ -52,6 +53,7 @@ import static com.atguigu.ljt.beijingnews.util.CacheUtils.getString;
 public class TabDetailPager extends MenuDetailBasePager {
 
     public static final String ID_ARRAY = "id_array";
+
     ListView mListView;
     @InjectView(R.id.viewpager)
     HorizontalScrollViewPager mViewpager;
@@ -59,6 +61,7 @@ public class TabDetailPager extends MenuDetailBasePager {
     TextView tvTitle;
     @InjectView(R.id.ll_point)
     LinearLayout llPoint;
+
     private NewsCenterBean.DataBean.ChildrenBean childrenBean;
     private List<TabDetailPagerBean.DataBean.NewsBean> news;
     private List<TabDetailPagerBean.DataBean.TopnewsBean> topNews;
@@ -77,6 +80,7 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     @Override
     public View initView() {
+
         View view = View.inflate(mContext, R.layout.tab_detail_pager, null);
         refreshListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
         mListView = refreshListView.getRefreshableView();
@@ -93,7 +97,7 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     private void setListener() {
         /**
-         * 点击某条新闻item后让其变灰 的监听
+         * 点击某条新闻item后让其变灰
          */
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,8 +113,8 @@ public class TabDetailPager extends MenuDetailBasePager {
                 /**
                  * 根据点击的下标位置 携带对应的url 跳转到显示新闻页面的activity
                  */
-                mContext.startActivity(new Intent(mContext,NewsDetailActivity.class).putExtra("url",Constants.BASE_URL +news.get(position-2).getUrl()));
-                Log.e("TAG", "TabDetailPager onItemClick()" + Constants.BASE_URL +news.get(position-2).getUrl());
+                mContext.startActivity(new Intent(mContext, NewsDetailActivity.class)
+                        .putExtra("url", Constants.BASE_URL + news.get(position - 2).getUrl()));
 
             }
         });
@@ -137,9 +141,14 @@ public class TabDetailPager extends MenuDetailBasePager {
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-//                Toast.makeText(mContext, "上拉", Toast.LENGTH_SHORT).show();
-                isLoadMore = true;
-                getDataFromNet(moreUrl);
+//                Toast.makeText(mContext, "上拉", Toast.LENGTH_SHOR).show();
+                if (!TextUtils.isEmpty(moreUrl)) {
+                    isLoadMore = true;
+                    getDataFromNet(moreUrl);
+                } else {
+                    Toast.makeText(mContext, "已经是最后一页了", Toast.LENGTH_SHORT).show();
+                    refreshListView.onRefreshComplete();
+                }
 
             }
         });
@@ -212,7 +221,6 @@ public class TabDetailPager extends MenuDetailBasePager {
             moreUrl = Constants.BASE_URL + pagerBean.getData().getMore();
         }
         if (isLoadMore) {
-            isLoadMore = false;
             news.addAll(pagerBean.getData().getNews());
             adapter.notifyDataSetChanged();
         } else {
@@ -321,10 +329,10 @@ public class TabDetailPager extends MenuDetailBasePager {
                     .into(viewHolder.ivIcon);
 
             int itemId = news.get(position).getId();
-            String idArray = CacheUtils.getString(mContext,ID_ARRAY);
-            if(idArray.contains(itemId+"")) {
+            String idArray = CacheUtils.getString(mContext, ID_ARRAY);
+            if (idArray.contains(itemId + "")) {
                 viewHolder.tvTitle.setTextColor(Color.GRAY);
-            }else{
+            } else {
                 viewHolder.tvTitle.setTextColor(Color.BLACK);
 
             }
