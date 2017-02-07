@@ -8,7 +8,7 @@ import org.xutils.x;
 /**
  * Created by 李金桐 on 2017/2/6.
  * QQ: 474297694
- * 功能: xxxx
+ * 功能: xutils注册
  */
 
 public class MyApp extends Application {
