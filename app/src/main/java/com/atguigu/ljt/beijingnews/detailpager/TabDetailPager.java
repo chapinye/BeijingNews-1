@@ -3,10 +3,13 @@ package com.atguigu.ljt.beijingnews.detailpager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -71,6 +74,12 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     private boolean isLoadMore;
     private String moreUrl;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            mViewpager.setCurrentItem((mViewpager.getCurrentItem()+1)%topNews.size());
+        }
+    };
 
     public TabDetailPager(Context context, NewsCenterBean.DataBean.ChildrenBean childrenBean) {
         super(context);
@@ -173,7 +182,15 @@ public class TabDetailPager extends MenuDetailBasePager {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                switch (state) {
+                    case ViewPager.SCROLL_STATE_IDLE:
+                        handler.removeMessages(0);
+                        handler.sendEmptyMessageDelayed(0,3000);
+                        break;
+                    case ViewPager.SCROLL_STATE_DRAGGING:
+                        handler.removeMessages(0);
+                        break;
+                }
             }
         });
     }
@@ -233,6 +250,8 @@ public class TabDetailPager extends MenuDetailBasePager {
             mViewpager.setAdapter(new MyPagerAdapter());
             tvTitle.setText(topNews.get(oldPosition).getTitle());
             addPoint();
+            handler.removeMessages(0);
+            handler.sendEmptyMessageDelayed(0,3000);
         }
 
     }
@@ -276,6 +295,22 @@ public class TabDetailPager extends MenuDetailBasePager {
                     .into(imageView);
 
             container.addView(imageView);
+            imageView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            handler.removeMessages(0);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            handler.removeMessages(0);
+                            handler.sendEmptyMessageDelayed(0,3000);
+                            break;
+                    }
+
+                    return true;
+                }
+            });
             return imageView;
         }
 

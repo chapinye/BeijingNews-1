@@ -1,5 +1,7 @@
 package com.atguigu.ljt.beijingnews.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -32,6 +34,8 @@ public class NewsDetailActivity extends AppCompatActivity {
     @InjectView(R.id.progressbar)
     ProgressBar progressbar;
     private String url;
+    private int textSize ;
+    private WebSettings webSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +59,7 @@ public class NewsDetailActivity extends AppCompatActivity {
                 }
             });
 
-            WebSettings webSettings = webview.getSettings();
+            webSettings = webview.getSettings();
             webSettings.setJavaScriptEnabled(true);
             //添加缩放按钮-页面要支持
             webSettings.setBuiltInZoomControls(true);
@@ -74,11 +78,53 @@ public class NewsDetailActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.ib_textsize:
-                Toast.makeText(NewsDetailActivity.this, "设置字体大小", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(NewsDetailActivity.this, "设置字体大小", Toast.LENGTH_SHORT).show();
+                showChangeTextSizeDialog();
                 break;
             case R.id.ib_share:
                 Toast.makeText(NewsDetailActivity.this, "分享", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
+
+    private void showChangeTextSizeDialog() {
+        String[] item = {"超大字体", "大字体", "正常字体", "小字体", "超小字体"};
+        new AlertDialog.Builder(this)
+                .setTitle("设置文字大小")
+                .setSingleChoiceItems(item, 2, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        textSize = which;
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        chengeTextSize();
+                    }
+                })
+                .show();
+    }
+
+    private void chengeTextSize() {
+        switch (textSize) {
+            case 0:
+                webSettings.setTextZoom(200);
+                break;
+            case 1:
+                webSettings.setTextZoom(150);
+                break;
+            case 2:
+                webSettings.setTextZoom(100);
+                break;
+            case 3:
+                webSettings.setTextZoom(75);
+                break;
+            case 4:
+                webSettings.setTextZoom(50);
+                break;
+        }
+    }
+
 }
