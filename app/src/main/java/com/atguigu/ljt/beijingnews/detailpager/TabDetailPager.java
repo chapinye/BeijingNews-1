@@ -3,6 +3,7 @@ package com.atguigu.ljt.beijingnews.detailpager;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,9 @@ import com.atguigu.ljt.beijingnews.view.HorizontalScrollViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.extras.SoundPullEventListener;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -52,6 +56,10 @@ public class TabDetailPager extends MenuDetailBasePager {
     private List<TabDetailPagerBean.DataBean.TopnewsBean> topNews;
     private MyBaseAdapter adapter;
     private int oldPosition;
+    private PullToRefreshListView refreshListView;
+
+    private boolean isLoadMore;
+    private String moreUrl;
 
     public TabDetailPager(Context context, NewsCenterBean.DataBean.ChildrenBean childrenBean) {
         super(context);
@@ -62,11 +70,38 @@ public class TabDetailPager extends MenuDetailBasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.tab_detail_pager, null);
-        mListView = (ListView) view.findViewById(R.id.listview);
+        refreshListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
+        mListView = refreshListView.getRefreshableView();
 
         View HeaderView = View.inflate(mContext, R.layout.header_view, null);
         ButterKnife.inject(this, HeaderView);
         mListView.addHeaderView(HeaderView);
+        /**
+         * 上拉下拉的声音监听
+         */
+        SoundPullEventListener<ListView> soundListener = new SoundPullEventListener<ListView>(mContext);
+        soundListener.addSoundEvent(PullToRefreshBase.State.PULL_TO_REFRESH, R.raw.pull_event);
+        soundListener.addSoundEvent(PullToRefreshBase.State.RESET, R.raw.reset_sound);
+        soundListener.addSoundEvent(PullToRefreshBase.State.REFRESHING, R.raw.refreshing_sound);
+        refreshListView.setOnPullEventListener(soundListener);
+
+        refreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+//                Toast.makeText(mContext, "下拉", Toast.LENGTH_SHORT).show();
+                isLoadMore = false;
+                getDataFromNet(Constants.BASE_URL + childrenBean.getUrl());
+            }
+
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+//                Toast.makeText(mContext, "上拉", Toast.LENGTH_SHORT).show();
+                isLoadMore = true;
+                getDataFromNet(moreUrl);
+
+            }
+        });
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -95,17 +130,18 @@ public class TabDetailPager extends MenuDetailBasePager {
     public void initData() {
         super.initData();
 
-        getDataFromNet();
+        getDataFromNet(Constants.BASE_URL + childrenBean.getUrl());
     }
 
-    private void getDataFromNet() {
-        RequestParams params = new RequestParams(Constants.BASE_URL + childrenBean.getUrl());
+    private void getDataFromNet(String url) {
+        RequestParams params = new RequestParams(url);
         x.http().get(params, new Callback.CommonCallback<String>() {
 
             @Override
             public void onSuccess(String result) {
                 Log.e("TAG", "TabDetailPager onSuccess()");
                 processData(result);
+                refreshListView.onRefreshComplete();
             }
 
             @Override
@@ -126,15 +162,28 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     private void processData(String json) {
         TabDetailPagerBean pagerBean = new Gson().fromJson(json, TabDetailPagerBean.class);
-//        Log.e("TAG","数据解析成功==TabDetailPager=="+pagerBean.getData().getNews().get(0).getTitle());
-        news = pagerBean.getData().getNews();
-        adapter = new MyBaseAdapter();
-        mListView.setAdapter(adapter);
-        topNews = pagerBean.getData().getTopnews();
+//        Log.e("TAG","数据解析成功==TabDetailPage=="+pagerBean.getData().getNews().get(0).getTitle());
+        if (TextUtils.isEmpty(pagerBean.getData().getMore())) {
+            moreUrl = "";
+        } else {
+            moreUrl = Constants.BASE_URL + pagerBean.getData().getMore();
+        }
+        if (isLoadMore) {
+            isLoadMore = false;
+            news.addAll(pagerBean.getData().getNews());
+            adapter.notifyDataSetChanged();
+        } else {
+            news = pagerBean.getData().getNews();
 
-        mViewpager.setAdapter(new MyPagerAdapter());
-        tvTitle.setText(topNews.get(oldPosition).getTitle());
-        addPoint();
+            adapter = new MyBaseAdapter();
+            mListView.setAdapter(adapter);
+            topNews = pagerBean.getData().getTopnews();
+
+            mViewpager.setAdapter(new MyPagerAdapter());
+            tvTitle.setText(topNews.get(oldPosition).getTitle());
+            addPoint();
+        }
+
     }
 
     /**
@@ -142,14 +191,14 @@ public class TabDetailPager extends MenuDetailBasePager {
      */
     private void addPoint() {
         llPoint.removeAllViews();
-        for(int i = 0; i <topNews.size() ; i++) {
+        for (int i = 0; i < topNews.size(); i++) {
             ImageView imageView = new ImageView(mContext);
             imageView.setBackgroundResource(R.drawable.point_selector);
-            LinearLayout.LayoutParams params =  new LinearLayout.LayoutParams(DensityUtil.dip2px(mContext,5),DensityUtil.dip2px(mContext,5));
-            if(i!=0) {
-                params.leftMargin = DensityUtil.dip2px(mContext,8);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.dip2px(mContext, 5), DensityUtil.dip2px(mContext, 5));
+            if (i != 0) {
+                params.leftMargin = DensityUtil.dip2px(mContext, 8);
                 imageView.setEnabled(false);
-            }else{
+            } else {
                 imageView.setEnabled(true);
             }
             imageView.setLayoutParams(params);
