@@ -18,6 +18,7 @@ import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
 import com.atguigu.ljt.beijingnews.bean.TabDetailPagerBean;
 import com.atguigu.ljt.beijingnews.util.Constants;
 import com.atguigu.ljt.beijingnews.util.DensityUtil;
+import com.atguigu.ljt.beijingnews.view.HorizontalScrollViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -41,7 +42,7 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     ListView mListView;
     @InjectView(R.id.viewpager)
-    ViewPager mViewpager;
+    HorizontalScrollViewPager mViewpager;
     @InjectView(R.id.tv_title)
     TextView tvTitle;
     @InjectView(R.id.ll_point)
@@ -62,6 +63,7 @@ public class TabDetailPager extends MenuDetailBasePager {
     public View initView() {
         View view = View.inflate(mContext, R.layout.tab_detail_pager, null);
         mListView = (ListView) view.findViewById(R.id.listview);
+
         View HeaderView = View.inflate(mContext, R.layout.header_view, null);
         ButterKnife.inject(this, HeaderView);
         mListView.addHeaderView(HeaderView);
@@ -69,15 +71,16 @@ public class TabDetailPager extends MenuDetailBasePager {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+                llPoint.getChildAt(oldPosition).setEnabled(false);
+                oldPosition = position;
+                llPoint.getChildAt(oldPosition).setEnabled(true);
             }
 
             @Override
             public void onPageSelected(int position) {
                 tvTitle.setText(topNews.get(position).getTitle());
 
-                llPoint.getChildAt(oldPosition).setEnabled(false);
-                oldPosition = position;
-                llPoint.getChildAt(oldPosition).setEnabled(true);
+
             }
 
             @Override
