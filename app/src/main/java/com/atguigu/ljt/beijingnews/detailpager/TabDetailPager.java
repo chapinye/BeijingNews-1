@@ -1,12 +1,14 @@
 package com.atguigu.ljt.beijingnews.detailpager;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
 import com.atguigu.ljt.beijingnews.bean.TabDetailPagerBean;
+import com.atguigu.ljt.beijingnews.util.CacheUtils;
 import com.atguigu.ljt.beijingnews.util.Constants;
 import com.atguigu.ljt.beijingnews.util.DensityUtil;
 import com.atguigu.ljt.beijingnews.view.HorizontalScrollViewPager;
@@ -36,6 +39,8 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.atguigu.ljt.beijingnews.util.CacheUtils.getString;
+
 /**
  * Created by 李金桐 on 2017/2/6.
  * QQ: 474297694
@@ -44,6 +49,7 @@ import butterknife.InjectView;
 
 public class TabDetailPager extends MenuDetailBasePager {
 
+    public static final String ID_ARRAY = "id_array";
     ListView mListView;
     @InjectView(R.id.viewpager)
     HorizontalScrollViewPager mViewpager;
@@ -76,6 +82,31 @@ public class TabDetailPager extends MenuDetailBasePager {
         View HeaderView = View.inflate(mContext, R.layout.header_view, null);
         ButterKnife.inject(this, HeaderView);
         mListView.addHeaderView(HeaderView);
+
+
+        setListener();
+
+        return view;
+    }
+
+    private void setListener() {
+        /**
+         * 点击某条新闻item后让其变灰 的监听
+         */
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int itemId = news.get(position - 2).getId();
+
+                String idArray = getString(mContext, ID_ARRAY);
+
+                if (!idArray.contains(itemId + "")) {
+                    CacheUtils.putString(mContext, ID_ARRAY, idArray + itemId + ",");
+                    adapter.notifyDataSetChanged();
+                }
+
+            }
+        });
         /**
          * 上拉下拉的声音监听
          */
@@ -84,7 +115,9 @@ public class TabDetailPager extends MenuDetailBasePager {
         soundListener.addSoundEvent(PullToRefreshBase.State.RESET, R.raw.reset_sound);
         soundListener.addSoundEvent(PullToRefreshBase.State.REFRESHING, R.raw.refreshing_sound);
         refreshListView.setOnPullEventListener(soundListener);
-
+        /**
+         * 上拉加载 下拉刷新的监听
+         */
         refreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
@@ -102,6 +135,9 @@ public class TabDetailPager extends MenuDetailBasePager {
 
             }
         });
+        /**
+         * mViewpager状态改变的监听 改变提示文本和红点高亮
+         */
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -123,7 +159,6 @@ public class TabDetailPager extends MenuDetailBasePager {
 
             }
         });
-        return view;
     }
 
     @Override
@@ -276,6 +311,16 @@ public class TabDetailPager extends MenuDetailBasePager {
                     .placeholder(R.drawable.news_pic_default)
                     .error(R.drawable.news_pic_default)
                     .into(viewHolder.ivIcon);
+
+            int itemId = news.get(position).getId();
+            String idArray = CacheUtils.getString(mContext,ID_ARRAY);
+            if(idArray.contains(itemId+"")) {
+                viewHolder.tvTitle.setTextColor(Color.GRAY);
+            }else{
+                viewHolder.tvTitle.setTextColor(Color.BLACK);
+
+            }
+
             return convertView;
         }
 
