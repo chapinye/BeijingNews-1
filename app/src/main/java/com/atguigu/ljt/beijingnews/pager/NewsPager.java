@@ -101,7 +101,7 @@ public class NewsPager extends BasePager {
         menuDetailBasePagers = new ArrayList<>();
         menuDetailBasePagers.add(new NewsMenuDetailPager(mainActivity, dataBeanList.get(0)));//新闻详情页面
         menuDetailBasePagers.add(new TopicMenuDetailPager(mainActivity));//专题详情页面
-        menuDetailBasePagers.add(new PhotosMenuDetailPager(mainActivity));//组图详情页面
+        menuDetailBasePagers.add(new PhotosMenuDetailPager(mainActivity,dataBeanList.get(2)));//组图详情页面
         menuDetailBasePagers.add(new InteractMenuDetailPager(mainActivity));//互动详情页面
         leftMenuFragment.setData(dataBeanList);
     }
@@ -178,5 +178,10 @@ public class NewsPager extends BasePager {
         //移除or添加视图
         fl_main.removeAllViews();
         fl_main.addView(menuDetailBasePagers.get(mPosition).rootView);
+        if(mPosition==2) {
+            list_or_grid.setVisibility(View.VISIBLE);
+        }else{
+            list_or_grid.setVisibility(View.GONE);
+        }
     }
 }

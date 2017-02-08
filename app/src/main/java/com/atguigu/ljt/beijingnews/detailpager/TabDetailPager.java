@@ -64,20 +64,24 @@ public class TabDetailPager extends MenuDetailBasePager {
     TextView tvTitle;
     @InjectView(R.id.ll_point)
     LinearLayout llPoint;
+    private PullToRefreshListView refreshListView;
 
     private NewsCenterBean.DataBean.ChildrenBean childrenBean;
     private List<TabDetailPagerBean.DataBean.NewsBean> news;
     private List<TabDetailPagerBean.DataBean.TopnewsBean> topNews;
     private MyBaseAdapter adapter;
     private int oldPosition;
-    private PullToRefreshListView refreshListView;
 
     private boolean isLoadMore;
     private String moreUrl;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            mViewpager.setCurrentItem((mViewpager.getCurrentItem()+1)%topNews.size());
+            if (msg.what == 0){
+                if(mViewpager!=null) {
+                    mViewpager.setCurrentItem((mViewpager.getCurrentItem() + 1) % topNews.size());
+                }
+            }
         }
     };
 
@@ -89,16 +93,20 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     @Override
     public View initView() {
-
+        /**
+         * 初始化ListView部分
+         */
         View view = View.inflate(mContext, R.layout.tab_detail_pager, null);
         refreshListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
         mListView = refreshListView.getRefreshableView();
-
+        /**
+         * 初始化顶部ViewPager部分 然后添加到ListView的头部
+         */
         View HeaderView = View.inflate(mContext, R.layout.header_view, null);
         ButterKnife.inject(this, HeaderView);
         mListView.addHeaderView(HeaderView);
 
-
+        //设置各个控件的监听器
         setListener();
 
         return view;
@@ -167,14 +175,16 @@ public class TabDetailPager extends MenuDetailBasePager {
         mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                //根据选中状态切换 小点高亮的状态
                 llPoint.getChildAt(oldPosition).setEnabled(false);
                 oldPosition = position;
                 llPoint.getChildAt(oldPosition).setEnabled(true);
+
             }
 
             @Override
             public void onPageSelected(int position) {
+                //切换不同页面时 切换不同的新闻文本
                 tvTitle.setText(topNews.get(position).getTitle());
 
 
@@ -185,7 +195,7 @@ public class TabDetailPager extends MenuDetailBasePager {
                 switch (state) {
                     case ViewPager.SCROLL_STATE_IDLE:
                         handler.removeMessages(0);
-                        handler.sendEmptyMessageDelayed(0,3000);
+                        handler.sendEmptyMessageDelayed(0, 3000);
                         break;
                     case ViewPager.SCROLL_STATE_DRAGGING:
                         handler.removeMessages(0);
@@ -241,23 +251,27 @@ public class TabDetailPager extends MenuDetailBasePager {
             news.addAll(pagerBean.getData().getNews());
             adapter.notifyDataSetChanged();
         } else {
+            //得到ListView的数据然后设置适配器
             news = pagerBean.getData().getNews();
-
             adapter = new MyBaseAdapter();
             mListView.setAdapter(adapter);
+            //得到ViewPager的数据然后设置适配器
             topNews = pagerBean.getData().getTopnews();
-
             mViewpager.setAdapter(new MyPagerAdapter());
             tvTitle.setText(topNews.get(oldPosition).getTitle());
+            /**
+             * 添加红点的方法
+             */
             addPoint();
+            //让顶部轮播图持续播放的广播
             handler.removeMessages(0);
-            handler.sendEmptyMessageDelayed(0,3000);
+            handler.sendEmptyMessageDelayed(0, 3000);
         }
 
     }
 
     /**
-     * 根据数据的数量动态添加红点
+     * 根据ViewPager页面的数量动态添加红点
      */
     private void addPoint() {
         llPoint.removeAllViews();
@@ -293,8 +307,8 @@ public class TabDetailPager extends MenuDetailBasePager {
                     .placeholder(R.drawable.news_pic_default)
                     .error(R.drawable.news_pic_default)
                     .into(imageView);
-
             container.addView(imageView);
+
             imageView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -304,7 +318,7 @@ public class TabDetailPager extends MenuDetailBasePager {
                             break;
                         case MotionEvent.ACTION_UP:
                             handler.removeMessages(0);
-                            handler.sendEmptyMessageDelayed(0,3000);
+                            handler.sendEmptyMessageDelayed(0, 3000);
                             break;
                     }
 
@@ -324,6 +338,7 @@ public class TabDetailPager extends MenuDetailBasePager {
             return view == object;
         }
     }
+
 
     class MyBaseAdapter extends BaseAdapter {
 
@@ -353,23 +368,23 @@ public class TabDetailPager extends MenuDetailBasePager {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            TabDetailPagerBean.DataBean.NewsBean newsEntity = news.get(position);
-            viewHolder.tvTitle.setText(newsEntity.getTitle());
-            viewHolder.tvTime.setText(newsEntity.getPubdate());
+            TabDetailPagerBean.DataBean.NewsBean newsBean = news.get(position);
+            viewHolder.tvTitle.setText(newsBean.getTitle());
+            viewHolder.tvTime.setText(newsBean.getPubdate());
 
-            Glide.with(mContext).load(Constants.BASE_URL + newsEntity.getListimage())
+            Glide.with(mContext).load(Constants.BASE_URL + newsBean.getListimage())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.news_pic_default)
                     .error(R.drawable.news_pic_default)
                     .into(viewHolder.ivIcon);
 
-            int itemId = news.get(position).getId();
+            int itemId = newsBean.getId();
+
             String idArray = CacheUtils.getString(mContext, ID_ARRAY);
             if (idArray.contains(itemId + "")) {
                 viewHolder.tvTitle.setTextColor(Color.GRAY);
             } else {
                 viewHolder.tvTitle.setTextColor(Color.BLACK);
-
             }
 
             return convertView;
