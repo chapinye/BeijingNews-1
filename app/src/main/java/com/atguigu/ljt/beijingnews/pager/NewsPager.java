@@ -180,6 +180,13 @@ public class NewsPager extends BasePager {
         fl_main.addView(menuDetailBasePagers.get(mPosition).rootView);
         if(mPosition==2) {
             list_or_grid.setVisibility(View.VISIBLE);
+            list_or_grid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PhotosMenuDetailPager photosMenuDetailPager = (PhotosMenuDetailPager) menuDetailBasePagers.get(2);
+                    photosMenuDetailPager.switchListOrGrid(list_or_grid);
+                }
+            });
         }else{
             list_or_grid.setVisibility(View.GONE);
         }

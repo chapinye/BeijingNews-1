@@ -35,4 +35,6 @@ public abstract class MenuDetailBasePager {
     public void  initData(){
 
     }
+
+
 }

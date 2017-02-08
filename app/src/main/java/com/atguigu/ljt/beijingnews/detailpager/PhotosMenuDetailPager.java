@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
     @InjectView(R.id.gridview)
     GridView mGridview;
     private List<PhotosMenuDetailbean.DataBean.NewsBean> datas;
+    private boolean isList = true;
+    private MyBaseAdapter adapter;
 
     public PhotosMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
@@ -93,7 +96,23 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
     private void processData(String json) {
         PhotosMenuDetailbean pagerBean = new Gson().fromJson(json, PhotosMenuDetailbean.class);
         datas = pagerBean.getData().getNews();
-        mListview.setAdapter(new MyBaseAdapter());
+        adapter = new MyBaseAdapter();
+        mListview.setAdapter(adapter);
+        mGridview.setAdapter(adapter);
+    }
+
+    public void switchListOrGrid(ImageButton list_or_grid) {
+        isList = !isList;
+        if (isList) {
+            mListview.setVisibility(View.VISIBLE);
+            mGridview.setVisibility(View.GONE);
+            list_or_grid.setImageResource(R.drawable.icon_pic_grid_type);
+        } else {
+            mListview.setVisibility(View.GONE);
+            mGridview.setVisibility(View.VISIBLE);
+            list_or_grid.setImageResource(R.drawable.icon_pic_list_type);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     class MyBaseAdapter extends BaseAdapter {
@@ -120,7 +139,7 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
                 convertView = View.inflate(mContext, R.layout.photos_menu_pager_item, null);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
-            }else{
+            } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.tvTitle.setText(datas.get(position).getTitle());
@@ -134,7 +153,7 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
             return convertView;
         }
 
-         class ViewHolder {
+        class ViewHolder {
             @InjectView(R.id.iv_icon)
             ImageView ivIcon;
             @InjectView(R.id.tv_title)
