@@ -77,8 +77,8 @@ public class TabDetailPager extends MenuDetailBasePager {
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == 0){
-                if(mViewpager!=null) {
+            if (msg.what == 0) {
+                if (mViewpager != null) {
                     mViewpager.setCurrentItem((mViewpager.getCurrentItem() + 1) % topNews.size());
                 }
             }
@@ -208,17 +208,21 @@ public class TabDetailPager extends MenuDetailBasePager {
     @Override
     public void initData() {
         super.initData();
-
         getDataFromNet(Constants.BASE_URL + childrenBean.getUrl());
     }
 
-    private void getDataFromNet(String url) {
+    private void getDataFromNet(final String url) {
+        String cache = CacheUtils.getString(mContext, url);
+        if (!TextUtils.isEmpty(cache)) {
+            processData(cache);
+        }
         RequestParams params = new RequestParams(url);
         x.http().get(params, new Callback.CommonCallback<String>() {
 
             @Override
             public void onSuccess(String result) {
                 Log.e("TAG", "TabDetailPager onSuccess()");
+                CacheUtils.putString(mContext, url, result);
                 processData(result);
                 refreshListView.onRefreshComplete();
             }
@@ -308,7 +312,11 @@ public class TabDetailPager extends MenuDetailBasePager {
                     .error(R.drawable.news_pic_default)
                     .into(imageView);
             container.addView(imageView);
-
+            /**
+             * 设置新闻Viewpager中 图片的触摸监听
+             * 当用户按下的时候移除自动滚动ViewPager的消息
+             * 当用户离开的时候继续发送3秒自动滚ViewPager的消息
+             */
             imageView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -321,7 +329,6 @@ public class TabDetailPager extends MenuDetailBasePager {
                             handler.sendEmptyMessageDelayed(0, 3000);
                             break;
                     }
-
                     return true;
                 }
             });

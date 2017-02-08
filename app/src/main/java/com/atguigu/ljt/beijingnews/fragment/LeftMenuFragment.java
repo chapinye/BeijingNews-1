@@ -37,14 +37,15 @@ public class LeftMenuFragment extends BaseFragment {
         mListView.setBackgroundColor(Color.BLACK);
         /**
          * 设置点击时 item不变色就是透明
-            */
-                    mListView.setCacheColorHint(0);
-            mListView.setSelector(android.R.color.transparent);
+         */
+        mListView.setCacheColorHint(0);
+        mListView.setSelector(android.R.color.transparent);
+        mListView.setDivider(null);
 
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
-                @Override
+            @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //记录点击的下标 刷新适配器 根据让被点击的item的Enabled为true使齐变色
                 mPosition = position;

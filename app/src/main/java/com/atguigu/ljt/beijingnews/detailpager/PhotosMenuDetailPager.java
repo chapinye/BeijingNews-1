@@ -1,6 +1,7 @@
 package com.atguigu.ljt.beijingnews.detailpager;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
 import com.atguigu.ljt.beijingnews.bean.PhotosMenuDetailbean;
+import com.atguigu.ljt.beijingnews.util.CacheUtils;
 import com.atguigu.ljt.beijingnews.util.Constants;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -66,17 +68,19 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
         getDataFromNet(Constants.BASE_URL + bean.getUrl());
     }
 
-    private void getDataFromNet(String url) {
+    private void getDataFromNet(final String url) {
+        String cache = CacheUtils.getString(mContext, url);
+        if (!TextUtils.isEmpty(cache)) {
+            processData(cache);
+        }
         RequestParams params = new RequestParams(url);
         x.http().get(params, new Callback.CommonCallback<String>() {
-
             @Override
             public void onSuccess(String result) {
                 Log.e("TAG", "TabDetailPager onSuccess()");
+                CacheUtils.putString(mContext, url, result);
                 processData(result);
             }
-
-
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 Log.e("TAG", "TabDetailPager onError()" + ex.getMessage());
