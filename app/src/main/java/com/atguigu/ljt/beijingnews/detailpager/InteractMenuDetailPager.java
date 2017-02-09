@@ -1,6 +1,7 @@
 package com.atguigu.ljt.beijingnews.detailpager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.activity.PicassoSampleActivity;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
 import com.atguigu.ljt.beijingnews.bean.PhotosMenuDetailbean;
@@ -34,7 +36,7 @@ import butterknife.InjectView;
 /**
  * Created by 李金桐 on 2017/2/6.
  * QQ: 474297694
- * 功能: xxxx
+ * 功能: RecyclerView 实现图组
  */
 
 public class InteractMenuDetailPager extends MenuDetailBasePager {
@@ -72,18 +74,19 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                Log.e("TAG", "TabDetailPager onSuccess()");
+                Log.e("TAG", "InteractMenuDetailPager onSuccess()");
                 CacheUtils.putString(mContext, url, result);
                 processData(result);
             }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                Log.e("TAG", "TabDetailPager onError()" + ex.getMessage());
+                Log.e("TAG", "InteractMenuDetailPager onError()" + ex.getMessage());
             }
 
             @Override
             public void onCancelled(CancelledException cex) {
+
             }
 
             @Override
@@ -143,6 +146,13 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
             public ViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.inject(this, itemView);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mContext.startActivity(new Intent(mContext, PicassoSampleActivity.class)
+                                .putExtra("url",Constants.BASE_URL + datas.get(getLayoutPosition()).getListimage()));
+                    }
+                });
             }
         }
     }

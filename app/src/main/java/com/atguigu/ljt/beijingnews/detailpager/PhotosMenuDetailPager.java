@@ -1,10 +1,12 @@
 package com.atguigu.ljt.beijingnews.detailpager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -13,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.activity.PicassoSampleActivity;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
 import com.atguigu.ljt.beijingnews.bean.PhotosMenuDetailbean;
@@ -59,7 +62,25 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
         ButterKnife.inject(this, view);
         mListview.setVisibility(View.VISIBLE);
         mGridview.setVisibility(View.GONE);
+        setListener();
         return view;
+    }
+
+    private void setListener() {
+        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mContext.startActivity(new Intent(mContext, PicassoSampleActivity.class)
+                        .putExtra("url",Constants.BASE_URL + datas.get(position).getListimage()));
+            }
+        });
+        mGridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mContext.startActivity(new Intent(mContext, PicassoSampleActivity.class)
+                        .putExtra("url",Constants.BASE_URL + datas.get(position).getListimage()));
+            }
+        });
     }
 
     @Override
@@ -137,7 +158,7 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
                 convertView = View.inflate(mContext, R.layout.photos_menu_pager_item, null);
@@ -153,7 +174,6 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
                     .placeholder(R.drawable.home_scroll_default)
                     .error(R.drawable.home_scroll_default)
                     .into(viewHolder.ivIcon);
-
             return convertView;
         }
 
@@ -165,6 +185,7 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
 
             ViewHolder(View view) {
                 ButterKnife.inject(this, view);
+
             }
         }
     }
