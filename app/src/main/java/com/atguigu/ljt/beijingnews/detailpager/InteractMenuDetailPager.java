@@ -168,5 +168,4 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
             }
         }
     }
-
 }
