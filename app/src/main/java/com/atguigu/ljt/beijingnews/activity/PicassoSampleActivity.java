@@ -2,6 +2,7 @@ package com.atguigu.ljt.beijingnews.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.atguigu.ljt.beijingnews.R;
@@ -22,7 +23,7 @@ public class PicassoSampleActivity extends AppCompatActivity {
 
         final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
         String url = getIntent().getStringExtra("url");
-        if(url!=null) {
+        if(url!=null&&!TextUtils.isEmpty(url)) {
             Picasso.with(this)
                     .load(url)
                     .into(photoView, new Callback() {
