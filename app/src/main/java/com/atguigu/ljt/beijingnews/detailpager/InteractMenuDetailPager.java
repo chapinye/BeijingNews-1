@@ -2,6 +2,7 @@ package com.atguigu.ljt.beijingnews.detailpager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,6 +45,8 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
     private final NewsCenterBean.DataBean bean;
     @InjectView(R.id.recyclerview)
     RecyclerView recyclerview;
+    @InjectView(R.id.swiperefreshlayout)
+    SwipeRefreshLayout swiperefreshlayout;
     private List<PhotosMenuDetailbean.DataBean.NewsBean> datas;
     private boolean isList = true;
 
@@ -56,6 +59,13 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
     public View initView() {
         View view = View.inflate(mContext, R.layout.interact_menu_detail_pager, null);
         ButterKnife.inject(this, view);
+        swiperefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getDataFromNet(Constants.BASE_URL + bean.getUrl());
+            }
+        });
+        swiperefreshlayout.setColorSchemeResources(android.R.color.holo_blue_bright ,android.R.color.holo_red_light );
         return view;
     }
 
@@ -77,6 +87,7 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
                 Log.e("TAG", "InteractMenuDetailPager onSuccess()");
                 CacheUtils.putString(mContext, url, result);
                 processData(result);
+                swiperefreshlayout.setRefreshing(false);
             }
 
             @Override
@@ -99,19 +110,19 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
     private void processData(String json) {
         PhotosMenuDetailbean pagerBean = new Gson().fromJson(json, PhotosMenuDetailbean.class);
         datas = pagerBean.getData().getNews();
-        MyRectclerViewAdapter  adapter = new MyRectclerViewAdapter();
+        MyRectclerViewAdapter adapter = new MyRectclerViewAdapter();
         recyclerview.setAdapter(adapter);
-        recyclerview.setLayoutManager( new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
+        recyclerview.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
     }
 
     public void switchListOrGrid(ImageButton list_or_grid) {
         isList = !isList;
         if (isList) {
             list_or_grid.setImageResource(R.drawable.icon_pic_grid_type);
-            recyclerview.setLayoutManager( new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
+            recyclerview.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         } else {
             list_or_grid.setImageResource(R.drawable.icon_pic_list_type);
-            recyclerview.setLayoutManager( new GridLayoutManager(mContext,2,GridLayoutManager.VERTICAL,false));
+            recyclerview.setLayoutManager(new GridLayoutManager(mContext, 2, GridLayoutManager.VERTICAL, false));
         }
     }
 
@@ -138,11 +149,12 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
             return datas.size();
         }
 
-         class ViewHolder extends RecyclerView.ViewHolder {
-             @InjectView(R.id.iv_icon)
-             ImageView ivIcon;
-             @InjectView(R.id.tv_title)
-             TextView tvTitle;
+        class ViewHolder extends RecyclerView.ViewHolder {
+            @InjectView(R.id.iv_icon)
+            ImageView ivIcon;
+            @InjectView(R.id.tv_title)
+            TextView tvTitle;
+
             public ViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.inject(this, itemView);
@@ -150,7 +162,7 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
                     @Override
                     public void onClick(View v) {
                         mContext.startActivity(new Intent(mContext, PicassoSampleActivity.class)
-                                .putExtra("url",Constants.BASE_URL + datas.get(getLayoutPosition()).getListimage()));
+                                .putExtra("url", Constants.BASE_URL + datas.get(getLayoutPosition()).getListimage()));
                     }
                 });
             }
