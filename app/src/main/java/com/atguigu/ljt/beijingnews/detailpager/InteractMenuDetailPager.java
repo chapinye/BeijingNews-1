@@ -19,10 +19,9 @@ import com.atguigu.ljt.beijingnews.activity.PicassoSampleActivity;
 import com.atguigu.ljt.beijingnews.base.MenuDetailBasePager;
 import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
 import com.atguigu.ljt.beijingnews.bean.PhotosMenuDetailbean;
+import com.atguigu.ljt.beijingnews.util.BitmapCacheUtils;
 import com.atguigu.ljt.beijingnews.util.CacheUtils;
 import com.atguigu.ljt.beijingnews.util.Constants;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 
 import org.xutils.common.Callback;
@@ -49,10 +48,11 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
     SwipeRefreshLayout swiperefreshlayout;
     private List<PhotosMenuDetailbean.DataBean.NewsBean> datas;
     private boolean isList = true;
-
+    private BitmapCacheUtils bitmapCacheUtils;
     public InteractMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
         this.bean = dataBean;
+        bitmapCacheUtils = new BitmapCacheUtils(mContext);
     }
 
     @Override
@@ -137,11 +137,12 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.tvTitle.setText(datas.get(position).getTitle());
 
-            Glide.with(mContext).load(Constants.BASE_URL + datas.get(position).getListimage())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.drawable.home_scroll_default)
-                    .error(R.drawable.home_scroll_default)
-                    .into(holder.ivIcon);
+//            Glide.with(mContext).load(Constants.BASE_URL + datas.get(position).getListimage())
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .placeholder(R.drawable.home_scroll_default)
+//                    .error(R.drawable.home_scroll_default)
+//                    .into(holder.ivIcon);
+            bitmapCacheUtils.setBitmap(Constants.BASE_URL + datas.get(position).getListimage(),holder.ivIcon);
         }
 
         @Override
