@@ -119,6 +119,7 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
             tabDetailPagers.get(position).initData();
             container.addView(tabDetailPagers.get(position).rootView);
             return tabDetailPagers.get(position).rootView;
+
         }
 
         @Override

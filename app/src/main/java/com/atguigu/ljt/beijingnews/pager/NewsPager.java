@@ -50,15 +50,16 @@ public class NewsPager extends BasePager {
         tv_title.setTextSize(25);
         ib_menu.setVisibility(View.VISIBLE);
 
-        String cacheJson = CacheUtils.getString(mContext, Constants.NEWSCENTER_PAGER_URL);
-        if (!TextUtils.isEmpty(cacheJson)) {
-            processData(cacheJson);
-        }
+
         getDataFromNet();
 
     }
 
     private void getDataFromNet() {
+        String cacheJson = CacheUtils.getString(mContext, Constants.NEWSCENTER_PAGER_URL);
+        if (!TextUtils.isEmpty(cacheJson)) {
+            processData(cacheJson);
+        }
         RequestParams params = new RequestParams(Constants.NEWSCENTER_PAGER_URL);
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
@@ -101,7 +102,7 @@ public class NewsPager extends BasePager {
         menuDetailBasePagers = new ArrayList<>();
         menuDetailBasePagers.add(new NewsMenuDetailPager(mainActivity, dataBeanList.get(0)));//新闻详情页面
         menuDetailBasePagers.add(new TopicMenuDetailPager(mainActivity, dataBeanList.get(0)));//专题详情页面
-        menuDetailBasePagers.add(new PhotosMenuDetailPager(mainActivity,dataBeanList.get(2)));//组图详情页面
+        menuDetailBasePagers.add(new PhotosMenuDetailPager(mainActivity, dataBeanList.get(2)));//组图详情页面
         menuDetailBasePagers.add(new InteractMenuDetailPager(mainActivity));//互动详情页面
         leftMenuFragment.setData(dataBeanList);
     }
@@ -178,16 +179,15 @@ public class NewsPager extends BasePager {
         //移除or添加视图
         fl_main.removeAllViews();
         fl_main.addView(menuDetailBasePagers.get(mPosition).rootView);
-        if(mPosition==2) {
+        if (mPosition == 2) {
             list_or_grid.setVisibility(View.VISIBLE);
             list_or_grid.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PhotosMenuDetailPager photosMenuDetailPager = (PhotosMenuDetailPager) menuDetailBasePagers.get(2);
-                    photosMenuDetailPager.switchListOrGrid(list_or_grid);
+                    ((PhotosMenuDetailPager) menuDetailBasePagers.get(2)).switchListOrGrid(list_or_grid);
                 }
             });
-        }else{
+        } else {
             list_or_grid.setVisibility(View.GONE);
         }
     }

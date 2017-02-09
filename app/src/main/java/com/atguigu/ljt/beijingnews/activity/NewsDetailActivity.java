@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atguigu.ljt.beijingnews.R;
+import com.atguigu.ljt.beijingnews.util.CacheUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -34,7 +36,7 @@ public class NewsDetailActivity extends AppCompatActivity {
     @InjectView(R.id.progressbar)
     ProgressBar progressbar;
     private String url;
-    private int textSize ;
+    private int textSize;
     private WebSettings webSettings;
 
     @Override
@@ -65,6 +67,9 @@ public class NewsDetailActivity extends AppCompatActivity {
             webSettings.setBuiltInZoomControls(true);
             //支持双击变大变小-页面支持
             webSettings.setUseWideViewPort(true);
+
+            cacheTextSize();
+            chengeTextSize();
         } else {
             Toast.makeText(NewsDetailActivity.this, "网址错误无法预览", Toast.LENGTH_SHORT).show();
             finish();
@@ -89,9 +94,10 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     private void showChangeTextSizeDialog() {
         String[] item = {"超大字体", "大字体", "正常字体", "小字体", "超小字体"};
+        cacheTextSize();
         new AlertDialog.Builder(this)
                 .setTitle("设置文字大小")
-                .setSingleChoiceItems(item, 2, new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(item, textSize, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         textSize = which;
@@ -102,9 +108,18 @@ public class NewsDetailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         chengeTextSize();
+                        CacheUtils.putString(NewsDetailActivity.this, "TextSize", textSize + "");
                     }
                 })
                 .show();
+    }
+
+    private void cacheTextSize() {
+        if (TextUtils.isEmpty(CacheUtils.getString(this, "TextSize"))) {
+            textSize = 2;
+        } else {
+            textSize = Integer.parseInt(CacheUtils.getString(this, "TextSize"));
+        }
     }
 
     private void chengeTextSize() {

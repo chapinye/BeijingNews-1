@@ -93,7 +93,7 @@ public class TopicMenuDetailPager extends MenuDetailBasePager {
     }
 
     /**
-     * @param isShowSlidingMenu 判断是否显示侧滑菜单
+     * @param isShowSlidingMenu 是否显示侧滑菜单
      */
     private void isShowSlidingMenu(boolean isShowSlidingMenu) {
         MainActivity mainActivity = (MainActivity) mContext;
@@ -102,6 +102,7 @@ public class TopicMenuDetailPager extends MenuDetailBasePager {
         } else {
             mainActivity.getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
         }
+
     }
 
     class MyAdapter extends PagerAdapter {
