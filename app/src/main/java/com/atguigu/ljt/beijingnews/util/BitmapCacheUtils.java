@@ -81,11 +81,13 @@ public class BitmapCacheUtils {
                 String fileName = MD5Encoder.encode(url);
                 File file = new File(mContext.getExternalFilesDir(null)+"/imageCache",fileName);
                 if(file.exists()) {
+                    //缓存到一级缓存中
+                    setBitmapFromMemory(url,BitmapFactory.decodeStream(new FileInputStream(file)));
                    return BitmapFactory.decodeStream(new FileInputStream(file));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("TAG", "BitmapCacheUtils setBitmapFromLocal()"+"图片本地获取失败");
+                Log.e("TAG", "BitmapCacheUtils setBitmapFromLocal()"+"本地图片获取失败");
             }
         }
         return null;
@@ -106,8 +108,11 @@ public class BitmapCacheUtils {
                     parentFile.mkdirs();
                 }
                 bitmap.compress(Bitmap.CompressFormat.PNG,100,new FileOutputStream(file));
+                //缓存到一级缓存中
+                setBitmapFromMemory(url,bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.e("TAG", "BitmapCacheUtils setBitmapFromLocal()本地图片缓存失败");
             }
         }
 
@@ -120,7 +125,7 @@ public class BitmapCacheUtils {
      */
     private void setBitmapFromNet(final String url, final ImageView ivIcon) {
         new AsyncTask<Void, Void, Bitmap>() {
-            //启动之前给图片设置默认图片
+            //启动异步任务之前给图片设置默认图片
             @Override
             protected void onPreExecute() {
                 ivIcon.setImageResource(R.drawable.home_scroll_default);
@@ -137,7 +142,7 @@ public class BitmapCacheUtils {
                         InputStream is = connection.getInputStream();
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
                         if (bitmap != null) {
-                            //请求成功 保存在本地和内存中
+                            //请求成功 缓存到一二级缓存中
                             setBitmapFromLocal(url,bitmap);
                             setBitmapFromMemory(url, bitmap);
                             return bitmap;
