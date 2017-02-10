@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -27,15 +26,14 @@ import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
-
-import org.xutils.common.Callback;
-import org.xutils.http.RequestParams;
-import org.xutils.x;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import okhttp3.Call;
 
 /**
  * Created by 李金桐 on 2017/2/6.
@@ -54,6 +52,7 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
     private List<PhotosMenuDetailbean.DataBean.NewsBean> datas;
     private boolean isList = true;
     private BitmapCacheUtils bitmapCacheUtils;
+
     public InteractMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
         this.bean = dataBean;
@@ -80,7 +79,7 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
                 getDataFromNet(Constants.BASE_URL + bean.getUrl());
             }
         });
-        swiperefreshlayout.setColorSchemeResources(android.R.color.holo_blue_bright ,android.R.color.holo_red_light );
+        swiperefreshlayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_red_light);
         return view;
     }
 
@@ -95,31 +94,51 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
         if (!TextUtils.isEmpty(cache)) {
             processData(cache);
         }
-        RequestParams params = new RequestParams(url);
-        x.http().get(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Log.e("TAG", "InteractMenuDetailPager onSuccess()");
-                CacheUtils.putString(mContext, url, result);
-                processData(result);
-                swiperefreshlayout.setRefreshing(false);
-            }
+        OkHttpUtils
+                .get()
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
 
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                Log.e("TAG", "InteractMenuDetailPager onError()" + ex.getMessage());
-            }
+                    }
 
-            @Override
-            public void onCancelled(CancelledException cex) {
+                    @Override
+                    public void onResponse(String response, int id) {
+                        processData(response);
+                        swiperefreshlayout.setRefreshing(false);
+                        CacheUtils.putString(mContext, url, response);
+                    }
 
-            }
 
-            @Override
-            public void onFinished() {
-
-            }
-        });
+                });
+        //xutil3联网请求
+//        RequestParams params = new RequestParams(url);
+//        x.http().get(params, new Callback.CommonCallback<String>() {
+//            @Override
+//            public void onSuccess(String result) {
+//                Log.e("TAG", "InteractMenuDetailPager onSuccess()");
+//                CacheUtils.putString(mContext, url, result);
+//                processData(result);
+//                swiperefreshlayout.setRefreshing(false);
+//            }
+//
+//            @Override
+//            public void onError(Throwable ex, boolean isOnCallback) {
+//                Log.e("TAG", "InteractMenuDetailPager onError()" + ex.getMessage());
+//            }
+//
+//            @Override
+//            public void onCancelled(CancelledException cex) {
+//
+//            }
+//
+//            @Override
+//            public void onFinished() {
+//
+//            }
+//        });
     }
 
     private void processData(String json) {
@@ -157,7 +176,7 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
 //                    .placeholder(R.drawable.home_scroll_default)
 //                    .error(R.drawable.home_scroll_default)
 //                    .into(holder.ivIcon);
-                //三级缓存请求图片
+            //三级缓存请求图片
 //            bitmapCacheUtils.setBitmap(Constants.BASE_URL + datas.get(position).getListimage(),holder.ivIcon);
             ImageLoader.getInstance().displayImage(Constants.BASE_URL + datas.get(position).getListimage(), holder.ivIcon, options);
         }
