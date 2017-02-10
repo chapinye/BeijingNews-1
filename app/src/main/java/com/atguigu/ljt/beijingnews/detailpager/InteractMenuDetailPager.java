@@ -2,6 +2,7 @@ package com.atguigu.ljt.beijingnews.detailpager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,9 @@ import com.atguigu.ljt.beijingnews.util.BitmapCacheUtils;
 import com.atguigu.ljt.beijingnews.util.CacheUtils;
 import com.atguigu.ljt.beijingnews.util.Constants;
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -42,6 +46,7 @@ import butterknife.InjectView;
 public class InteractMenuDetailPager extends MenuDetailBasePager {
 
     private final NewsCenterBean.DataBean bean;
+    private final DisplayImageOptions options;
     @InjectView(R.id.recyclerview)
     RecyclerView recyclerview;
     @InjectView(R.id.swiperefreshlayout)
@@ -53,6 +58,16 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
         super(context);
         this.bean = dataBean;
         bitmapCacheUtils = new BitmapCacheUtils(mContext);
+        options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.home_scroll_default)
+                .showImageForEmptyUri(R.drawable.home_scroll_default)
+                .showImageOnFail(R.drawable.home_scroll_default)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .displayer(new RoundedBitmapDisplayer(10))
+                .build();
     }
 
     @Override
@@ -136,13 +151,15 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.tvTitle.setText(datas.get(position).getTitle());
-
+            //Glide请求图片
 //            Glide.with(mContext).load(Constants.BASE_URL + datas.get(position).getListimage())
 //                    .diskCacheStrategy(DiskCacheStrategy.ALL)
 //                    .placeholder(R.drawable.home_scroll_default)
 //                    .error(R.drawable.home_scroll_default)
 //                    .into(holder.ivIcon);
-            bitmapCacheUtils.setBitmap(Constants.BASE_URL + datas.get(position).getListimage(),holder.ivIcon);
+                //三级缓存请求图片
+//            bitmapCacheUtils.setBitmap(Constants.BASE_URL + datas.get(position).getListimage(),holder.ivIcon);
+            ImageLoader.getInstance().displayImage(Constants.BASE_URL + datas.get(position).getListimage(), holder.ivIcon, options);
         }
 
         @Override
