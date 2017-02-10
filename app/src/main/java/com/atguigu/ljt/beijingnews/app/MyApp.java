@@ -12,6 +12,7 @@ import org.xutils.BuildConfig;
 import org.xutils.x;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.sharesdk.framework.ShareSDK;
 
 /**
  * Created by 李金桐 on 2017/2/6.
@@ -28,6 +29,7 @@ public class MyApp extends Application {
         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);     		// 初始化 JPush
         initImageLoader(this);
+        ShareSDK.initSDK(this);
     }
     public static void initImageLoader(Context context) {
         // This configuration tuning is custom. You can tune every option, you may tune some of them,
