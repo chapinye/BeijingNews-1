@@ -49,7 +49,8 @@ public class BitmapCacheUtils {
      * 通过三级缓存 将请求到的图片设置到ImageView上
      * 根据三级缓存原理的精髓
      * 依次从一二三级缓存中获取图片
-     *  @param url
+     *
+     * @param url
      * @param ivIcon
      */
     public void setBitmap(String url, ImageView ivIcon) {
@@ -72,22 +73,23 @@ public class BitmapCacheUtils {
 
     /**
      * 从本地获取图片
+     *
      * @param url
      * @return
      */
     private Bitmap getBitmapFromLocal(String url) {
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             try {
                 String fileName = MD5Encoder.encode(url);
-                File file = new File(mContext.getExternalFilesDir(null)+"/imageCache",fileName);
-                if(file.exists()) {
+                File file = new File(mContext.getExternalFilesDir(null) + "/imageCache", fileName);
+                if (file.exists()) {
                     //缓存到一级缓存中
-                    setBitmapFromMemory(url,BitmapFactory.decodeStream(new FileInputStream(file)));
-                   return BitmapFactory.decodeStream(new FileInputStream(file));
+                    setBitmapFromMemory(url, BitmapFactory.decodeStream(new FileInputStream(file)));
+                    return BitmapFactory.decodeStream(new FileInputStream(file));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("TAG", "BitmapCacheUtils setBitmapFromLocal()"+"本地图片获取失败");
+                Log.e("TAG", "BitmapCacheUtils setBitmapFromLocal()" + "本地图片获取失败");
             }
         }
         return null;
@@ -95,21 +97,20 @@ public class BitmapCacheUtils {
 
     /**
      * 把图片保存到本地
+     *
      * @param url
      * @param bitmap
      */
     private void setBitmapFromLocal(String url, Bitmap bitmap) {
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             try {
                 String fileName = MD5Encoder.encode(url);
-                File file = new File(mContext.getExternalFilesDir(null)+"/imageCache",fileName);
-                File parentFile =   file.getParentFile();
-                if(!parentFile.exists()) {
+                File file = new File(mContext.getExternalFilesDir(null) + "/imageCache", fileName);
+                File parentFile = file.getParentFile();
+                if (!parentFile.exists()) {
                     parentFile.mkdirs();
                 }
-                bitmap.compress(Bitmap.CompressFormat.PNG,100,new FileOutputStream(file));
-                //缓存到一级缓存中
-                setBitmapFromMemory(url,bitmap);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(file));
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e("TAG", "BitmapCacheUtils setBitmapFromLocal()本地图片缓存失败");
@@ -120,16 +121,19 @@ public class BitmapCacheUtils {
 
     /**
      * 异步任务联网获取图片  如果获取到 设置到一二级缓存中 并且把图片设置到ImageView上
+     *
      * @param url
      * @param ivIcon
      */
     private void setBitmapFromNet(final String url, final ImageView ivIcon) {
-        new AsyncTask<Void, Void, Bitmap>() {
-            //启动异步任务之前给图片设置默认图片
+            new AsyncTask<Void, Void, Bitmap>() {
+                //启动异步任务之前给图片设置默认图片
+
             @Override
             protected void onPreExecute() {
                 ivIcon.setImageResource(R.drawable.home_scroll_default);
             }
+
             @Override
             protected Bitmap doInBackground(Void... params) {
                 try {
@@ -143,27 +147,28 @@ public class BitmapCacheUtils {
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
                         if (bitmap != null) {
                             //请求成功 缓存到一二级缓存中
-                            setBitmapFromLocal(url,bitmap);
+                            setBitmapFromLocal(url, bitmap);
                             setBitmapFromMemory(url, bitmap);
                             return bitmap;
                         }
                     }
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return null;
             }
+
+            //请求成功返回的Bitmap对线会传入此方法  此方法是在主线程执行可以直接进行ui的修改
             @Override
             protected void onPostExecute(Bitmap bitmap) {
                 //获取成功设置图片 如果失败设置失败的图片
                 if (bitmap != null) {
                     ivIcon.setImageBitmap(bitmap);
-                }else{
+                } else {
                     ivIcon.setImageResource(R.drawable.home_scroll_default);
                 }
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 

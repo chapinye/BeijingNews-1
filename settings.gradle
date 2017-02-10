@@ -1,4 +1,4 @@
-include ':app', 'SlidingMenu-library', ':PhotoView_library', ':AndroidAndJs'
+include ':app', 'SlidingMenu-library', ':PhotoView_library', ':AndroidAndJs', ':JPushExample(586017)'
 
 include ':ViewPagerIndicator_library'
 include ':ViewPagerIndicator_sample'

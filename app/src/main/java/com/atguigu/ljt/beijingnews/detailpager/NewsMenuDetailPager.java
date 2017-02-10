@@ -68,7 +68,6 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
         return view;

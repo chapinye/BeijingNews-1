@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.atguigu.ljt.beijingnews">
+    package="com.atguigu.ljt.beijingnews"   
+    android:versionCode="301"
+    android:versionName="3.0.1"
+    >
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="21" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Required -->
     <permission
         android:name="com.atguigu.ljt.beijingnews.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
-
+  
     <!-- Required  一些系统要求的权限，如访问网络等-->
     <uses-permission android:name="com.atguigu.ljt.beijingnews.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
@@ -23,8 +25,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-
-
+    
+    
     <!-- Optional for location -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 用于开启 debug 版本的应用在6.0 系统上 层叠窗口权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -33,27 +35,32 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-
+    
     <application
-        android:name=".app.MyApp"
-        android:allowBackup="true"
-        android:icon="@mipmap/icon_150"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activity.WelcomeActivity">
+        android:name="com.example.jpushdemo.ExampleApplication">
+
+        <!-- For test only 测试的主程序-->
+        <activity
+            android:name="com.example.jpushdemo.MainActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.MainActivity"
-            android:theme="@style/Theme.PageIndicatorDefaults" />
-        <activity android:name=".activity.GuideActivity" />
-        <activity android:name=".activity.NewsDetailActivity"></activity>
-        <activity android:name=".activity.PicassoSampleActivity"></activity>
+       <!-- For test only 测试高级功能 -->
+       <activity android:name="com.example.jpushdemo.PushSetActivity" android:label="@string/app_name"></activity>
+        <!-- For test only 测试设置 -->
+       <activity android:name="com.example.jpushdemo.SettingActivity" android:label="@string/app_name"></activity>
+        <!-- For test only 测试状态通知栏，需要打开的Activity -->
+        <activity android:name="com.example.jpushdemo.TestActivity" android:exported="false">
+            <intent-filter>
+                <action android:name="jpush.testAction" />
+                <category android:name="jpush.testCategory" />
+            </intent-filter>
+        </activity>
 
         <!-- Rich push 核心功能 since 2.0.6-->
         <activity
@@ -133,7 +140,7 @@
 
         <!-- User defined.  For test only  用户自定义的广播接收器-->
         <receiver
-            android:name="com.atguigu.ljt.beijingnews.receiver.MyReceiver"
+            android:name="com.example.jpushdemo.MyReceiver"
             android:exported="false"
             android:enabled="true">
             <intent-filter>
@@ -149,6 +156,6 @@
         <!-- Required  . Enable it you can get statistics data with channel -->
         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
         <meta-data android:name="JPUSH_APPKEY" android:value="544bb2c6529483f06572adc0" /> <!--  </>值来自开发者平台取得的AppKey-->
-    </application>
 
+    </application>
 </manifest>
