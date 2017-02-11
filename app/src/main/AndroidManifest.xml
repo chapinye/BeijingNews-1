@@ -62,6 +62,7 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:theme="@style/Theme.PageIndicatorDefaults" />
         <activity android:name=".activity.GuideActivity" />
         <activity android:name=".activity.NewsDetailActivity"></activity>

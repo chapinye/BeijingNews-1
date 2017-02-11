@@ -113,6 +113,13 @@ public class TabDetailPager extends MenuDetailBasePager {
     }
 
     private void setListener() {
+        mViewpager.setOnScrollBugListener(new HorizontalScrollViewPager.OnScrollBugListener() {
+            @Override
+            public void scrollBug() {
+                handler.removeMessages(0);
+                handler.sendEmptyMessageDelayed(0, 3000);
+            }
+        });
         /**
          * 点击某条新闻item后让其变灰
          */

@@ -52,6 +52,7 @@ public class TopicMenuDetailPager extends MenuDetailBasePager {
     public View initView() {
         View view = View.inflate(mContext, R.layout.topic_menu_detail_pager, null);
         ButterKnife.inject(this, view);
+
         viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

@@ -20,7 +20,6 @@ public class HorizontalScrollViewPager extends ViewPager {
     private float startX;
     private float startY;
 
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -35,6 +34,9 @@ public class HorizontalScrollViewPager extends ViewPager {
                 if (Math.abs(endX - startX) > Math.abs(endY - startY)) {
                     if (getCurrentItem() == 0 && endX - startX > 0) {
                         getParent().requestDisallowInterceptTouchEvent(false);
+                        if(l!=null) {
+                            l.scrollBug();
+                        }
                     } else if (getCurrentItem() == getAdapter().getCount() - 1 && endX - startX < 0) {
                         getParent().requestDisallowInterceptTouchEvent(false);
                     } else {
@@ -47,5 +49,13 @@ public class HorizontalScrollViewPager extends ViewPager {
                 break;
         }
         return super.dispatchTouchEvent(ev);
+    }
+    public  interface  OnScrollBugListener{
+        void scrollBug();
+    }
+    private OnScrollBugListener l;
+
+    public  void setOnScrollBugListener(OnScrollBugListener l){
+        this.l = l;
     }
 }

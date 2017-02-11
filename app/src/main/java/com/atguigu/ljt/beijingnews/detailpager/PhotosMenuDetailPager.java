@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +20,7 @@ import com.atguigu.ljt.beijingnews.bean.NewsCenterBean;
 import com.atguigu.ljt.beijingnews.bean.PhotosMenuDetailbean;
 import com.atguigu.ljt.beijingnews.util.CacheUtils;
 import com.atguigu.ljt.beijingnews.util.Constants;
+import com.atguigu.ljt.beijingnews.view.RoundImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -179,7 +179,7 @@ public class PhotosMenuDetailPager extends MenuDetailBasePager {
 
         class ViewHolder {
             @InjectView(R.id.iv_icon)
-            ImageView ivIcon;
+            RoundImageView ivIcon;
             @InjectView(R.id.tv_title)
             TextView tvTitle;
 
