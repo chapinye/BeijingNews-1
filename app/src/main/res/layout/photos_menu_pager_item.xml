@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:zhy="http://schemas.android.com/apk/res/com.atguigu.ljt.beijingnews"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -13,14 +15,16 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageView
+        <com.atguigu.ljt.beijingnews.view.RoundImageView
             android:id="@+id/iv_icon"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:scaleType="centerCrop"
             android:layout_margin="3dp"
-            android:src="@drawable/home_scroll_default" />
-
+            android:src="@drawable/home_scroll_default"
+            zhy:borderRadius="20dp"
+            zhy:type="round" >
+        </com.atguigu.ljt.beijingnews.view.RoundImageView>
         <TextView
             android:textSize="16sp"
             android:textColor="#000000"
