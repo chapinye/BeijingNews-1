@@ -26,8 +26,5 @@ public class MyViewPager extends ViewPager {
         return true;
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return false;
-    }
+
 }

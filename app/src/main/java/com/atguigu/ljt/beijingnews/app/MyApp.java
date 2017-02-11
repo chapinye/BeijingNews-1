@@ -7,12 +7,16 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.xutils.BuildConfig;
 import org.xutils.x;
 
+import java.util.concurrent.TimeUnit;
+
 import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.ShareSDK;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by 李金桐 on 2017/2/6.
@@ -30,7 +34,20 @@ public class MyApp extends Application {
         JPushInterface.init(this);     		// 初始化 JPush
         initImageLoader(this);
         ShareSDK.initSDK(this);
+        initOkHttpClient();
     }
+
+    private void initOkHttpClient() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .addInterceptor(new LoggerInterceptor("TAG"))
+                .connectTimeout(5000L, TimeUnit.MILLISECONDS)
+                .readTimeout(5000L, TimeUnit.MILLISECONDS)
+                //其他配置
+                .build();
+
+        OkHttpUtils.initClient(okHttpClient);
+    }
+
     public static void initImageLoader(Context context) {
         // This configuration tuning is custom. You can tune every option, you may tune some of them,
         // or you can create default configuration by

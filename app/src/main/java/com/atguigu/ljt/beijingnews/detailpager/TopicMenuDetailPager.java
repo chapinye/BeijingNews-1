@@ -41,6 +41,7 @@ public class TopicMenuDetailPager extends MenuDetailBasePager {
 
     private List<NewsCenterBean.DataBean.ChildrenBean> dataBeans;
     private ArrayList<TabDetailPager> tabDetailPagers;
+    private int oldPosition;
 
     public TopicMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
         super(context);
@@ -59,16 +60,16 @@ public class TopicMenuDetailPager extends MenuDetailBasePager {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 0) {
-                    isShowSlidingMenu(true);
-                } else {
-                    isShowSlidingMenu(false);
-                }
+                    isShowSlidingMenu(position == 0);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                if (state == ViewPager.SCROLL_STATE_IDLE && tabDetailPagers.get(oldPosition).handler != null) {
+                    tabDetailPagers.get(oldPosition).handler.removeCallbacksAndMessages(null);
+                    tabDetailPagers.get(oldPosition).handler.sendEmptyMessageDelayed(0, 3000);
+                    oldPosition = viewpager.getCurrentItem();
+                }
             }
         });
         return view;

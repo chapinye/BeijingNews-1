@@ -59,7 +59,7 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     ListView mListView;
     @InjectView(R.id.viewpager)
-    HorizontalScrollViewPager mViewpager;
+     HorizontalScrollViewPager mViewpager;
     @InjectView(R.id.tv_title)
     TextView tvTitle;
     @InjectView(R.id.ll_point)
@@ -74,11 +74,11 @@ public class TabDetailPager extends MenuDetailBasePager {
 
     private boolean isLoadMore;
     private String moreUrl;
-    private Handler handler = new Handler() {
+    public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-                if (mViewpager != null) {
+                if (mViewpager != null&&topNews!=null) {
                     mViewpager.setCurrentItem((mViewpager.getCurrentItem() + 1) % topNews.size());
                 }
             }
@@ -306,12 +306,13 @@ public class TabDetailPager extends MenuDetailBasePager {
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             //设置默认的和联网请求
             //加载图片
-            Glide.with(mContext).load(Constants.BASE_URL + topNews.get(position).getTopimage())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.drawable.news_pic_default)
-                    .error(R.drawable.news_pic_default)
-                    .into(imageView);
-            container.addView(imageView);
+
+                Glide.with(mContext.getApplicationContext()).load(Constants.BASE_URL + topNews.get(position).getTopimage())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.news_pic_default)
+                        .error(R.drawable.news_pic_default)
+                        .into(imageView);
+                container.addView(imageView);
             /**
              * 设置新闻Viewpager中 图片的触摸监听
              * 当用户按下的时候移除自动滚动ViewPager的消息

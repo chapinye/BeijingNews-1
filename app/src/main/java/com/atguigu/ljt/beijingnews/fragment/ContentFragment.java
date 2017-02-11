@@ -2,6 +2,7 @@ package com.atguigu.ljt.beijingnews.fragment;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
@@ -10,6 +11,8 @@ import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.activity.MainActivity;
 import com.atguigu.ljt.beijingnews.base.BaseFragment;
 import com.atguigu.ljt.beijingnews.base.BasePager;
+import com.atguigu.ljt.beijingnews.detailpager.NewsMenuDetailPager;
+import com.atguigu.ljt.beijingnews.detailpager.TabDetailPager;
 import com.atguigu.ljt.beijingnews.pager.HomePager;
 import com.atguigu.ljt.beijingnews.pager.NewsPager;
 import com.atguigu.ljt.beijingnews.pager.SettingPager;

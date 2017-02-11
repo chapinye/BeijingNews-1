@@ -7,6 +7,8 @@ import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.fragment.ContentFragment;
 import com.atguigu.ljt.beijingnews.fragment.LeftMenuFragment;
 import com.atguigu.ljt.beijingnews.util.DensityUtil;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.util.Util;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
@@ -58,5 +60,13 @@ public class MainActivity extends SlidingFragmentActivity {
     public ContentFragment getContentFragment() {
 //        return (ContentFragment) getSupportFragmentManager().findFragmentByTag(CONTENT_TAG);
         return contentFragment;
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        if (Util.isOnMainThread()) {
+            Glide.with(getApplicationContext()).pauseRequests();
+        }
+        super.onDetachedFromWindow();
     }
 }
