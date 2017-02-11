@@ -24,11 +24,10 @@ import butterknife.OnClick;
 /**
  * Created by 李金桐 on 2017/2/6.
  * QQ: 474297694
- * 功能: xxxx
+ * 功能: 新闻详情页面
  */
 
 public class NewsMenuDetailPager extends MenuDetailBasePager {
-
 
     @InjectView(R.id.ib_tab_next)
     ImageButton ibTabNext;
@@ -41,6 +40,9 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
 
     private List<NewsCenterBean.DataBean.ChildrenBean> dataBeans;
     private ArrayList<TabDetailPager> tabDetailPagers;
+    /**
+     * 记录上一次ViewPager页面的下标
+     */
     private int oldPosition;
 
     public NewsMenuDetailPager(Context context, NewsCenterBean.DataBean dataBean) {
@@ -60,9 +62,26 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
 
             @Override
             public void onPageSelected(int position) {
+                /**
+                 * 当是第一个页面的时候 可以侧滑
+                 */
                 isShowSlidingMenu(position == 0);
             }
 
+            /**
+             * 当内层ViewPager 滑动第一个页面从左往右  或者最后一个页面从右往左滑动的时候
+             * 将事件交给此类的外层ViewPager执行 内层的ViewPager将不会在有后续的事件
+             * 所以内层ViewPager的OnPageChangeListener和触摸事件不会执行
+             * 所以内层ViewPager的轮播图不会在继续播放
+             *
+             * 此方法在外层ViewPager SCROLL_STATE_IDLE状态的时候提取上次页面的下标
+             *
+             * oldPosition为上次外层ViewPager的下标 此下标为可能出现bug的内层页面的下标
+             *
+             * 让内层的ViewPager从新发送轮播消息即可解决此BUG
+             * 注: 内层ViewPager的handler要为public 并且最好判断不为null在调用
+             * @param state
+             */
             @Override
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager.SCROLL_STATE_IDLE && tabDetailPagers.get(oldPosition).handler != null) {
@@ -71,6 +90,7 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
                     oldPosition = viewpager.getCurrentItem();
                 }
             }
+
         });
         return view;
     }
@@ -92,7 +112,7 @@ public class NewsMenuDetailPager extends MenuDetailBasePager {
     }
 
     /**
-     * @param isShowSlidingMenu 判断是否显示侧滑菜单
+     * @param isShowSlidingMenu 设置侧滑菜单是否显示
      */
     private void isShowSlidingMenu(boolean isShowSlidingMenu) {
         MainActivity mainActivity = (MainActivity) mContext;

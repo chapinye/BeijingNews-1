@@ -94,6 +94,7 @@ public class InteractMenuDetailPager extends MenuDetailBasePager {
         if (!TextUtils.isEmpty(cache)) {
             processData(cache);
         }
+        //OkHttpUtils请求网络
         OkHttpUtils
                 .get()
                 .url(url)
