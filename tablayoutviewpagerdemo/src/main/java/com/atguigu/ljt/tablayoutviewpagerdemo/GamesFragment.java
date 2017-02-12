@@ -2,9 +2,14 @@ package com.atguigu.ljt.tablayoutviewpagerdemo;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by 李金桐 on 2017/2/11.
@@ -14,28 +19,43 @@ import android.widget.TextView;
 
 public class GamesFragment extends BaseFragment {
 
-    private TextView textView;
+
+    @InjectView(R.id.iv_icon)
+    ImageView ivIcon;
+    private final View view;
 
     public GamesFragment(Context context) {
         super(context);
-        textView = new TextView(mContext);
+        view = View.inflate(mContext, R.layout.game_fragment, null);
+        ButterKnife.inject(this, view);
     }
 
     @Override
     protected View initView() {
-    Log.e("TAG", "GamesFragment initView()");
-        return textView;
+        Log.e("TAG", "GamesFragment initView()");
+
+        return view;
     }
+
     @Override
     public void initData() {
         super.initData();
-        if(isInitData) {
+        if (isInitData) {
             isInitData = !isInitData;
             Log.e("TAG", "GamesFragment initData()");
-            textView.setText("游戏");
-            textView.setGravity(Gravity.CENTER);
-            textView.setTextSize(25);
+            Glide.with(mContext.getApplicationContext()).load("")
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(ivIcon);
         }
 
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 }

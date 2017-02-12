@@ -13,6 +13,7 @@ import android.view.MotionEvent;
  */
 
 public class HorizontalScrollViewPager extends ViewPager {
+
     public HorizontalScrollViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

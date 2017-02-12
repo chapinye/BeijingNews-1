@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 public abstract class BaseFragment extends Fragment {
     public   Context mContext;
-    protected boolean isInitData = false;
+    protected boolean isInitData = true;
     public BaseFragment(Context context) {
         this.mContext = context;
     }
@@ -29,6 +29,7 @@ public abstract class BaseFragment extends Fragment {
 
 
     protected abstract View initView();
+
 
     public void initData() {
 
