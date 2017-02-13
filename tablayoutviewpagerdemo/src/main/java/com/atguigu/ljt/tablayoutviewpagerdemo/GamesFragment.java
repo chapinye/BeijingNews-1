@@ -1,6 +1,5 @@
 package com.atguigu.ljt.tablayoutviewpagerdemo;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,54 +7,37 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 /**
  * Created by 李金桐 on 2017/2/11.
  * QQ: 474297694
  * 功能: xxxx
  */
 
-public class GamesFragment extends BaseFragment {
+public class GamesFragment extends ShieldPreloadingDataFragment {
 
+    private final String url;
+    private ImageView imageView;
 
-    @InjectView(R.id.iv_icon)
-    ImageView ivIcon;
-    private final View view;
-
-    public GamesFragment(Context context) {
-        super(context);
-        view = View.inflate(mContext, R.layout.game_fragment, null);
-        ButterKnife.inject(this, view);
+    public GamesFragment(String url) {
+        super();
+        this.url = url;
     }
 
     @Override
     protected View initView() {
+        imageView = new ImageView(getContext());
         Log.e("TAG", "GamesFragment initView()");
-
-        return view;
+        return imageView;
     }
 
     @Override
-    public void initData() {
-        super.initData();
-        if (isInitData) {
-            isInitData = !isInitData;
-            Log.e("TAG", "GamesFragment initData()");
-            Glide.with(mContext.getApplicationContext()).load("")
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
-                    .into(ivIcon);
-        }
-
+    protected void initData() {
+        Glide.with(getContext()).load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
+                .into(imageView);
+        Log.e("TAG", "GamesFragment initData()==");
     }
 
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
 }

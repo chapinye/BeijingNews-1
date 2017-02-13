@@ -1,12 +1,13 @@
 package com.atguigu.ljt.beijingnews.activity;
 
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import com.atguigu.ljt.beijingnews.R;
 import com.atguigu.ljt.beijingnews.fragment.ContentFragment;
 import com.atguigu.ljt.beijingnews.fragment.LeftMenuFragment;
-import com.atguigu.ljt.beijingnews.util.DensityUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.util.Util;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -22,22 +23,33 @@ public class MainActivity extends SlidingFragmentActivity {
 
     private ContentFragment contentFragment;
     private LeftMenuFragment leftMenuFragment;
+    private DisplayMetrics met;
+    private SlidingMenu slidingMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setBehindContentView(R.layout.leftmenu);
-        SlidingMenu slidingMenu = getSlidingMenu();
+        slidingMenu = getSlidingMenu();
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
         slidingMenu.setMode(SlidingMenu.LEFT);
 
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        met = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(met);
+        slidingMenu.setBehindOffset((int) (met.widthPixels*0.60));
 
-        slidingMenu.setBehindOffset(DensityUtil.dip2px(this, 200));
         setFragment();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        getWindowManager().getDefaultDisplay().getMetrics(met);
+        slidingMenu.setBehindOffset((int) (met.widthPixels*0.60));
+        super.onConfigurationChanged(newConfig);
     }
 
     private void setFragment() {

@@ -1,4 +1,4 @@
-include ':app', ':tablayoutviewpagerdemo', 'SlidingMenu-library', ':PhotoView_library', ':AndroidAndJs', ':JPushExample(586017)', ':Image-Loader-library', ':Android-Universal-Image-Loader-sample'
+include ':app', ':tablayoutviewpagerdemo', ':SwitchButton',  ':SwipeMenuListView', 'SlidingMenu-library', ':PhotoView_library', ':AndroidAndJs', ':JPushExample(586017)', ':Image-Loader-library', ':Android-Universal-Image-Loader-sample'
 include ':VariousShapeImageView-圆角图片'
 include ':ViewPagerIndicator_library'
 include ':ViewPagerIndicator_sample'
